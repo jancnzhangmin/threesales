@@ -1,0 +1,107 @@
+<script>
+
+$(document).ready(function(){
+    $('.i-checks').iCheck({
+        checkboxClass: 'icheckbox_square-green',
+        radioClass: 'iradio_square-green'
+    });
+
+    $('#statuscheck').on('ifChecked',function(event){
+        $('#statusinput').val(1);
+    });
+    $('#statuscheck').on('ifUnchecked',function(event){
+        $('#statusinput').val(0);
+    });
+    if($('#statusinput').val() != '' && $('#statusinput').val() != '0'){
+        $('#statuscheck').iCheck('check');
+    }
+
+    $('#smt').click(function(){
+        if($('#name').val()==''){
+            toastr.error('商家名称不能为空');
+            return false;
+        }
+        if($('#shortname').val()==''){
+            toastr.error('商家简称不能为空');
+            return false;
+        }
+        if($('#tel').val()==''){
+            toastr.error('商家电话不能为空');
+            return false;
+        }
+        if($('#address').val()==''){
+            toastr.error('商家地址不能为空');
+            return false;
+        }
+    });
+
+});
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#img1').attr('src', e.target.result);
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+
+<div class="ibox-content form-horizontal m-t">
+  <div class="form-group">
+    <%= form_for(@seller,:html => {:class=>'form-horizontal m-t',:multipart => true}) do |f| %>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">商家名称：</label>
+          <div class="col-sm-6">
+            <%= f.text_field :name,class:"form-control",id:'name' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">商家简称：</label>
+          <div class="col-sm-6">
+            <%= f.text_field :shortname,class:"form-control",id:'shortname' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">电话：</label>
+          <div class="col-sm-6">
+            <%= f.text_field :tel,class:"form-control",id:'tel' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">地址：</label>
+          <div class="col-sm-6">
+            <%= f.text_field :address,class:"form-control",id:'address' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">状态：</label>
+          <div class="col-sm-6">
+            <%= f.hidden_field :status,class:"form-control",id:'statusinput' %>
+            <label>
+              <input type="checkbox" class="i-checks" id="statuscheck"> 启用</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">商家图片：</label>
+          <div class="col-sm-6 text-center">
+            <%= f.file_field :sellerimage,class:"form-control",:onchange => "readURL(this)" %>
+            <img id="img1" width="600px" src=<%= @seller.sellerimage.url %>>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">商家简介：</label>
+          <div class="col-sm-6">
+            <%= f.kindeditor :summary,class:"form-control" %>
+          </div>
+        </div>
+         <div class="form-group">
+          <label class="col-sm-3 control-label"></label>
+          <div class="col-sm-6 text-right">
+            <%= f.submit '确定',class: "btn btn-w-m btn-primary",id:'smt' %>&nbsp;<%= link_to "返回",sellers_path,class: "btn btn-w-m btn-primary " %>
+          </div>
+        </div>
+    <% end %>
+  </div>
+</div>
