@@ -47,7 +47,9 @@ class SellersController < ApplicationController
     end
   end
 
-
+def show
+  @productclacount = @seller.productclas.count
+end
 
   private
   # Use callbacks to share common setup or constraints between actions.

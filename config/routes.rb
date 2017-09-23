@@ -3,5 +3,10 @@ Rails.application.routes.draw do
   resources :sellers do
     resources :productclas
   end
+  resources :apis do
+    collection do
+      get 'getseller'
+    end
+  end
 
 end
