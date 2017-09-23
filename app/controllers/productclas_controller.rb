@@ -22,9 +22,15 @@ redirect_to seller_productclas_path
   end
 
   def update
-    @productclas = @seller.productclas
-    @productclas = @productclas.create(productcla_params)
-    redirect_to seller_productclas_path
+    respond_to do |format|
+      if @productcla.update(@productcla_params)
+        format.html { redirect_to seller_productclas_path, notice: 'Unit was successfully updated.' }
+        format.json { render :show, status: :ok, location: @productcla }
+      else
+        format.html { render :edit }
+        format.json { render json: @productcla.errors, status: :unprocessable_entity }
+      end
+    end
   end
 
   def destroy

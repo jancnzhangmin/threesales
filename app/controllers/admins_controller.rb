@@ -24,9 +24,15 @@ class AdminsController < ApplicationController
   end
 
   def update
-    @admins = @seller.admins
-    @admins = @admins.create(admin_params)
-    redirect_to seller_admins_path
+    respond_to do |format|
+      if @admin.update(@admin_params)
+        format.html { redirect_to seller_admins_path, notice: 'Unit was successfully updated.' }
+        format.json { render :show, status: :ok, location: @admin }
+      else
+        format.html { render :edit }
+        format.json { render json: @admin.errors, status: :unprocessable_entity }
+      end
+    end
   end
 
   def destroy
