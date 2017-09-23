@@ -18,7 +18,7 @@ class ProductclasController < ApplicationController
   def create
     @productclas = @seller.productclas
     @productclas = @productclas.create(productcla_params)
-redirect_to seller_productclas_path
+    redirect_to seller_productclas_path
   end
 
   def update

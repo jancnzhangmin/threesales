@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  productcla_id: 1
+  name: MyString
+  spec: MyString
+  model: MyString
+  price: 1.5
+  content: MyText
+  status: 1
+  secondprice: 1.5
+
+two:
+  productcla_id: 1
+  name: MyString
+  spec: MyString
+  model: MyString
+  price: 1.5
+  content: MyText
+  status: 1
+  secondprice: 1.5
