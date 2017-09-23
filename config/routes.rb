@@ -3,7 +3,18 @@ Rails.application.routes.draw do
   resources :sellers do
     resources :productclas
 
+
     resources :products
+
+    resources :admins
+
   end
+  resources :apis do
+    collection do
+      get 'getseller'
+    end
+  end
+
+
 
 end

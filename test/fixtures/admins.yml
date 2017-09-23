@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  seller_id: 1
+  username: MyString
+  password_digest: MyString
+  login: MyString
+  status: MyString
+  auth: MyString
+
+two:
+  seller_id: 1
+  username: MyString
+  password_digest: MyString
+  login: MyString
+  status: MyString
+  auth: MyString
