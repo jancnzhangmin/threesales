@@ -1,0 +1,98 @@
+<script>
+
+$(document).ready(function(){
+    $('.i-checks').iCheck({
+        checkboxClass: 'icheckbox_square-green',
+        radioClass: 'iradio_square-green'
+    });
+
+    $('#statuscheck').on('ifChecked',function(event){
+        $('#statusinput').val(1);
+    });
+    $('#statuscheck').on('ifUnchecked',function(event){
+        $('#statusinput').val(0);
+    });
+    if($('#statusinput').val() != '' && $('#statusinput').val() != '0'){
+        $('#statuscheck').iCheck('check');
+    }
+
+    $('#smt').click(function(){
+        if($('#username').val()==''){
+            toastr.error('用户名不能为空');
+            return false;
+        }
+        if($('#login').val()==''){
+            toastr.error('帐号不能为空');
+            return false;
+        }
+        if($('#password').val()==''){
+            toastr.error('密码不能为空');
+            return false;
+        }
+        if($('#password_confirmation').val()==''){
+            toastr.error('再次输入密码不能为空');
+            return false;
+        }
+        if(($('#password_confirmation').val())!=($('#password').val()))
+        {
+            toastr.error('两次输入的密码不相同');
+            return false;
+        }
+    });
+
+});
+
+</script>
+
+<div class="ibox-content form-horizontal m-t">
+  <div class="form-group">
+    <%= form_for([@seller,@admin],:html => {:class=>'form-horizontal m-t',:multipart => true}) do |f| %>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">用户名：</label>
+          <div class="col-sm-6">
+            <%= f.text_field :username,class:"form-control",id:'username' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">帐号：</label>
+          <div class="col-sm-6">
+            <%= f.text_field :login,class:"form-control",id:'login' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">密码：</label>
+          <div class="col-sm-6">
+            <%= f.password_field :password,class:"form-control",id:'password' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">再次输入密码：</label>
+          <div class="col-sm-6">
+            <%= f.password_field :password_condirmation,class:"form-control",id:'password_confirmation' %>
+          </div>
+        </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">状态：</label>
+          <div class="col-sm-6">
+            <%= f.hidden_field :status,class:"form-control",id:'statusinput' %>
+            <label>
+              <input type="checkbox" class="i-checks" id="statuscheck"> 启用</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label">权限：</label>
+          <div class="col-sm-6">
+            <%= f.text_field :auth,class:"form-control" %>
+          </div>
+        </div>
+         <div class="form-group">
+          <label class="col-sm-3 control-label"></label>
+          <div class="col-sm-6 text-right">
+            <%= f.submit '确定',class: "btn btn-w-m btn-primary",id:'smt' %>&nbsp;<%= link_to "返回",seller_admins_path(@seller),class: "btn btn-w-m btn-primary " %>
+          </div>
+        </div>
+    <% end %>
+  </div>
+</div>
