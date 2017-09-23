@@ -1,6 +1,6 @@
 class SellersController < ApplicationController
 
-  before_action :set_seller, only: [:show, :edit, :update, :destroy]
+  before_action :set_seller, only: [:show, :edit, :update, :destroy, :productcla]
   def index
     @sellers = Seller.all
   end
@@ -13,6 +13,7 @@ class SellersController < ApplicationController
   def new
     @seller = Seller.new
   end
+
 
   def create
     @seller = Seller.new(seller_params)
@@ -45,6 +46,8 @@ class SellersController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+
 
   private
   # Use callbacks to share common setup or constraints between actions.

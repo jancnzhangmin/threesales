@@ -24,7 +24,9 @@
               <td><%= seller.tel %></td>
               <td><%= seller.address %></td>
               <td><%= seller.status %></td>
-              <td><%= link_to '编辑',edit_seller_path(seller) %>
+              <td>
+                <%= link_to '查看',seller_path(seller) %>
+                <%= link_to '编辑',edit_seller_path(seller) %>
                 <%= link_to '删除', seller, method: :delete, data: { confirm: '确认删除?' } %></td>
             </tr>
         <% end %>
