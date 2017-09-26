@@ -1,6 +1,9 @@
 class Seller < ApplicationRecord
   has_many :productclas
 
+  has_one :selleruser
+  has_one :buycar, through: :selleruser
+
   has_many :products
   has_many :admins
 

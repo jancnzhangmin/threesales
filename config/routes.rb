@@ -2,12 +2,11 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   resources :sellers do
     resources :productclas
-
-
     resources :products
-
     resources :admins
-
+    resources :sellerusers do
+    resources :buycars
+      end
   end
   resources :apis do
     collection do

@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  seller_id: 1
+  user_id: 1
+  up_id: 1
+  openid: MyString
+  qrcode: MyString
+  qrcodetime: 2017-09-25 15:05:05
+
+two:
+  seller_id: 1
+  user_id: 1
+  up_id: 1
+  openid: MyString
+  qrcode: MyString
+  qrcodetime: 2017-09-25 15:05:05

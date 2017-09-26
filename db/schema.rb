@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-
-ActiveRecord::Schema.define(version: 20170923024135) do
+ActiveRecord::Schema.define(version: 20170925072318) do
 
   create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "seller_id"
@@ -24,6 +23,14 @@ ActiveRecord::Schema.define(version: 20170923024135) do
     t.datetime "updated_at",      null: false
   end
 
+  create_table "buycars", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "selleruser_id"
+    t.integer  "amount"
+    t.string   "status"
+    t.string   "ordernumber"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
 
   create_table "productclas", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "seller_id"
@@ -59,6 +66,17 @@ ActiveRecord::Schema.define(version: 20170923024135) do
     t.string   "sellerimage_content_type"
     t.integer  "sellerimage_file_size"
     t.datetime "sellerimage_updated_at"
+  end
+
+  create_table "sellerusers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "seller_id"
+    t.integer  "user_id"
+    t.integer  "up_id"
+    t.string   "openid"
+    t.string   "qrcode"
+    t.datetime "qrcodetime"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end
