@@ -1,7 +1,6 @@
 class BuycarsController < ApplicationController
 
   def index
-    @sellerusers = @seller.sellerusers
   end
 
 

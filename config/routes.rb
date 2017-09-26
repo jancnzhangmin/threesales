@@ -4,9 +4,9 @@ Rails.application.routes.draw do
     resources :productclas
     resources :products
     resources :admins
-    resources :sellerusers do
+    resources :sellerusers
     resources :buycars
-      end
+
   end
   resources :apis do
     collection do
