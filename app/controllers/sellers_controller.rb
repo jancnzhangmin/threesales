@@ -49,6 +49,7 @@ class SellersController < ApplicationController
 
 def show
   @productclacount = @seller.productclas.count
+
 end
 
   private
