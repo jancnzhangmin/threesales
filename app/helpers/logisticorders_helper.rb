@@ -1,0 +1,2 @@
+module LogisticordersHelper
+end

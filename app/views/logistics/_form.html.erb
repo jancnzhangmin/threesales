@@ -1,0 +1,21 @@
+
+
+<div class="ibox-content form-horizontal m-t">
+
+  <div class="form-group">
+    <%= form_for([@logistic],:html => {:class=>'form-horizontal m-t',:multipart => true}) do |f| %>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">物流公司名称：</label>
+          <div class="col-sm-5">
+            <%= f.text_field :logistic,class:"form-control" %>
+          </div>
+        </div>
+         <div class="form-group">
+          <label class="col-sm-3 control-label"></label>
+          <div class="col-sm-5 text-right">
+            <%= f.submit '确定',class: "btn btn-w-m btn-primary " %>&nbsp;<%= link_to "返回",logistics_path(@logistic),class: "btn btn-w-m btn-primary " %>
+          </div>
+        </div>
+    <% end %>
+  </div>
+</div>

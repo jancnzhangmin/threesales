@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  logistic_id: 1
+  buycar_id: 1
+  ordernumber: MyString
+
+two:
+  logistic_id: 1
+  buycar_id: 1
+  ordernumber: MyString

@@ -8,6 +8,11 @@ Rails.application.routes.draw do
     resources :buycars
 
   end
+
+  resources :logistics
+  resources :logisticorders
+
+
   resources :apis do
     collection do
       get 'getseller'
