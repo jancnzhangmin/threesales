@@ -6,7 +6,11 @@ class CreateUsers < ActiveRecord::Migration[5.0]
       t.string :vcode
       t.datetime :vcodetime
 
-      t.timestamps
+      create_table :userpwds do |t|
+        t.belongs_to :user, index: true
+        t.string :password_digest
+        t.timestamps
+        end
     end
   end
 end
