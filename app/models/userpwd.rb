@@ -1,0 +1,2 @@
+class Userpwd < ApplicationRecord
+end

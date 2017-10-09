@@ -5,6 +5,10 @@ class LogisticordersController < ApplicationController
 
   def index
     @logisticorders = Logisticorder.all
+
+  end
+  def show
+
   end
   def edit
     @logistics = Logistic.all

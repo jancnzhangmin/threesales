@@ -1,0 +1,62 @@
+<script>
+
+$(document).ready(function(){
+
+    $('#smt').click(function(){
+        if($('#name').val()==''){
+            toastr.error('收货人不能为空');
+            return false;
+        }
+
+        if($('#tel').val()==''){
+            toastr.error('联系电话不能为空');
+            return false;
+        }
+
+        if($('#address').val()==''){
+            toastr.error('收货地址不能为空');
+            return false;
+        }
+
+    });
+
+});
+
+</script>
+
+<div class="ibox-content form-horizontal m-t">
+  <div class="form-group">
+    <%= form_for(@recepitaddre,:html => {:class=>'form-horizontal m-t',:multipart => true}) do |f| %>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">收货人：</label>
+          <div class="col-sm-6">
+            <%= f.text_field :name,class:"form-control",id:'name' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">联系电话：</label>
+          <div class="col-sm-6">
+            <%= f.text_field :tel,class:"form-control",id:'tel' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">行政区：</label>
+          <div class="col-sm-6">
+            <%= f.text_field :region,class:"form-control",id:'region' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">收货地址：</label>
+          <div class="col-sm-6">
+            <%= f.text_field :address,class:"form-control",id:'address' %>
+          </div>
+        </div>
+         <div class="form-group">
+          <label class="col-sm-3 control-label"></label>
+          <div class="col-sm-6 text-right">
+            <%= f.submit '确定',class: "btn btn-w-m btn-primary",id:'smt' %>&nbsp;<%= link_to "返回",recepitaddres_path,class: "btn btn-w-m btn-primary " %>
+          </div>
+        </div>
+    <% end %>
+  </div>
+</div>

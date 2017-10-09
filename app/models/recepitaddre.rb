@@ -1,0 +1,2 @@
+class Recepitaddre < ApplicationRecord
+end

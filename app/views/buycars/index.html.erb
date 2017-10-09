@@ -14,11 +14,11 @@
         </tr>
         </thead>
         <tbody>
-        <% @buycars.each do |buycar| %>
+        <% @buycars.each do |f| %>
             <tr>
-              <td><%= buycar.amount %></td>
-              <td><%= buycar.status %></td>
-              <td><%= buycar.ordernumber %></td>
+              <td><%= f.amount %></td>
+              <td><%= f.status %></td>
+              <td><%= f.ordernumber %></td>
             </tr>
         <% end %>
         </tbody>

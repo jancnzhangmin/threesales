@@ -1,6 +1,8 @@
 class BuycarsController < ApplicationController
 
   def index
+    @seller = Seller.find(params[:seller_id])
+    @buycars = @seller.buycars
   end
 
 

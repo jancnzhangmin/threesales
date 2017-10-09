@@ -12,6 +12,11 @@ Rails.application.routes.draw do
   resources :logistics
   resources :logisticorders
 
+  resources :recepitaddres
+
+  resources :orders
+  resources :userpwds
+  resources :user
 
   resources :apis do
     collection do

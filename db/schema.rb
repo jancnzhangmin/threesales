@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170926074022) do
+ActiveRecord::Schema.define(version: 20171009032323) do
 
   create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "seller_id"
@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(version: 20170926074022) do
     t.string   "ordernumber"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
+    t.integer  "seller_id"
   end
 
   create_table "logisticorders", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -82,6 +83,16 @@ ActiveRecord::Schema.define(version: 20170926074022) do
     t.float    "sthird",        limit: 24
   end
 
+  create_table "recepitaddres", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "user_id"
+    t.string   "name"
+    t.string   "tel"
+    t.string   "region"
+    t.string   "address"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "sellers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.text     "summary",                  limit: 65535
@@ -106,6 +117,21 @@ ActiveRecord::Schema.define(version: 20170926074022) do
     t.datetime "qrcodetime"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "userpwds", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "password_digest"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
+  create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "login"
+    t.string   "password_digest"
+    t.string   "vcode"
+    t.datetime "vcodetime"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
   end
 
 end
