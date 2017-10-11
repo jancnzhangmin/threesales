@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171011063542) do
+ActiveRecord::Schema.define(version: 20171011080023) do
 
   create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "seller_id"
@@ -21,18 +21,6 @@ ActiveRecord::Schema.define(version: 20171011063542) do
     t.string   "auth"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
-  end
-
-  create_table "benefits", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "product_id"
-    t.float    "first",      limit: 24
-    t.float    "second",     limit: 24
-    t.float    "third",      limit: 24
-    t.float    "sfirst",     limit: 24
-    t.float    "ssecond",    limit: 24
-    t.float    "sthird",     limit: 24
-    t.datetime "created_at",            null: false
-    t.datetime "updated_at",            null: false
   end
 
   create_table "buycars", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -60,6 +48,15 @@ ActiveRecord::Schema.define(version: 20171011063542) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "notices", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.string   "noticeimg_file_name"
+    t.string   "noticeimg_content_type"
+    t.integer  "noticeimg_file_size"
+    t.datetime "noticeimg_updated_at"
+  end
+
   create_table "orders", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "buycar_id"
     t.integer  "product_id"
@@ -84,7 +81,6 @@ ActiveRecord::Schema.define(version: 20171011063542) do
     t.float    "price",                   limit: 24
     t.text     "content",                 limit: 65535
     t.integer  "status"
-
     t.float    "secondprice",             limit: 24
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false
@@ -99,7 +95,6 @@ ActiveRecord::Schema.define(version: 20171011063542) do
     t.string   "productimg_content_type"
     t.integer  "productimg_file_size"
     t.datetime "productimg_updated_at"
-
   end
 
   create_table "recepitaddres", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -149,6 +144,8 @@ ActiveRecord::Schema.define(version: 20171011063542) do
     t.string   "password_digest"
     t.string   "vcode"
     t.datetime "vcodetime"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
   end
 
 end

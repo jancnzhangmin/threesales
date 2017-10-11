@@ -17,7 +17,9 @@ Rails.application.routes.draw do
 
   resources :orders
   resources :userpwds
-  resources :user
+  resources :users
+
+  resources :notices
 
   resources :apis do
     collection do
