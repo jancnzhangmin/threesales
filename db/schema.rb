@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171009032323) do
+ActiveRecord::Schema.define(version: 20171011063542) do
 
   create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "seller_id"
@@ -68,19 +68,23 @@ ActiveRecord::Schema.define(version: 20171009032323) do
     t.string   "name"
     t.string   "spec"
     t.string   "model"
-    t.float    "price",         limit: 24
-    t.text     "content",       limit: 65535
+    t.float    "price",                   limit: 24
+    t.text     "content",                 limit: 65535
     t.integer  "status"
-    t.float    "secondprice",   limit: 24
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.float    "secondprice",             limit: 24
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
     t.integer  "seller_id"
-    t.float    "first",         limit: 24
-    t.float    "second",        limit: 24
-    t.float    "third",         limit: 24
-    t.float    "sfirst",        limit: 24
-    t.float    "ssecond",       limit: 24
-    t.float    "sthird",        limit: 24
+    t.float    "first",                   limit: 24
+    t.float    "second",                  limit: 24
+    t.float    "third",                   limit: 24
+    t.float    "sfirst",                  limit: 24
+    t.float    "ssecond",                 limit: 24
+    t.float    "sthird",                  limit: 24
+    t.string   "productimg_file_name"
+    t.string   "productimg_content_type"
+    t.integer  "productimg_file_size"
+    t.datetime "productimg_updated_at"
   end
 
   create_table "recepitaddres", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

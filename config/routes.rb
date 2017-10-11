@@ -21,6 +21,8 @@ Rails.application.routes.draw do
   resources :apis do
     collection do
       get 'getseller'
+      get 'getproductlist'
+      get 'getproductcontent'
     end
   end
 
