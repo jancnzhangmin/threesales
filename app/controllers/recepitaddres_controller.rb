@@ -55,7 +55,7 @@ class RecepitaddresController < ApplicationController
   end
 # Never trust parameters from the scary internet, only allow the white list through.
   def recepitaddre_params
-    params.require(:recepitaddre).permit(:user_id, :name, :tel, :region, :address)
+    params.require(:recepitaddre).permit(:user_id, :name, :tel, :region, :address, :choice)
   end
 
 

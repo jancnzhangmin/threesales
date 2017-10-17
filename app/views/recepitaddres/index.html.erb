@@ -12,6 +12,7 @@
           <th class="text-center">联系电话</th>
           <th class="text-center">行政区</th>
           <th class="text-center">收货地址</th>
+          <th class="text-center">是否选中地址</th>
           <th class="text-center">操作</th>
         </tr>
         </thead>
@@ -22,6 +23,16 @@
               <td><%= recepitaddre.tel %></td>
               <td><%= recepitaddre.region %></td>
               <td><%= recepitaddre.address %></td>
+              <td><% if recepitaddre.choice == 1 %>
+
+                    已选
+
+                    <% else %>
+
+                    未选
+
+                    <% end %>
+              </td>
               <td>
 
                 <%= link_to '编辑',edit_recepitaddre_path(recepitaddre) %>

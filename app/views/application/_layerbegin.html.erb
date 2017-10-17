@@ -25,28 +25,61 @@
           </div>
         </li>
 
-
         <li data-turbolinks="false">
 
           <a href="">
             <i class="fa fa-file"></i>
 
-            <span class="nav-label">农场</span>
+            <span class="nav-label">商家</span>
 
 
             <span class="fa arrow"></span>
           </a>
           <ul class="nav nav-second-level">
             <li>
+              <%= link_to '商家', sellers_path%>
 
-
-            </li>
-            <li>
-              农场
             </li>
           </ul>
-
         </li>
+
+        <li data-turbolinks="false">
+
+          <a href="">
+            <i class="fa fa-file"></i>
+
+            <span class="nav-label">物流</span>
+
+
+            <span class="fa arrow"></span>
+          </a>
+          <ul class="nav nav-second-level">
+            <li>
+              <%= link_to '物流公司', logistics_path%>
+              <%= link_to '物流单号', logisticorders_path%>
+            </li>
+          </ul>
+        </li>
+
+        <li data-turbolinks="false">
+
+          <a href="">
+            <i class="fa fa-file"></i>
+
+            <span class="nav-label">通告</span>
+
+
+            <span class="fa arrow"></span>
+          </a>
+          <ul class="nav nav-second-level">
+            <li>
+              <%= link_to '通告', notices_path%>
+
+            </li>
+          </ul>
+        </li>
+
+
 
       </ul>
     </div>

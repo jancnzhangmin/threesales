@@ -2,6 +2,24 @@
 
 $(document).ready(function(){
 
+    if($('#choiceinput').val()=="1"){
+        $('#choicecheckbox').attr('checked',true);
+    }else{
+        $('#choicecheckbox').attr('checked',false);
+    }
+
+    $('#choicecheckbox').click(function(){
+        if($(this).prop("checked")){
+            $('#choiceinput').val("1");
+        }else{
+            $('#choiceinput').val("0");
+        }
+
+    });
+
+
+
+
     $('#smt').click(function(){
         if($('#name').val()==''){
             toastr.error('收货人不能为空');
@@ -51,6 +69,15 @@ $(document).ready(function(){
             <%= f.text_field :address,class:"form-control",id:'address' %>
           </div>
         </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">是否已选中收货地址：</label>
+          <div class="col-sm-6">
+            <%= f.text_field :choice,class:"form-control",id:'choiceinput' %>
+            <input type="checkbox" id="choicecheckbox"> </input>
+          </div>
+        </div>
+
+
          <div class="form-group">
           <label class="col-sm-3 control-label"></label>
           <div class="col-sm-6 text-right">
