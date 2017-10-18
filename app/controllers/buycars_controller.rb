@@ -8,6 +8,6 @@ class BuycarsController < ApplicationController
 
   private
   def buycar_params
-    params.require(:buycar).permit(:selleruser_id, :amount, :status, :ordernumber,:seller_id)
+    params.require(:buycar).permit(:selleruser_id, :amount, :status, :ordernumber,:seller_id,:user_id,:remark)
   end
 end
