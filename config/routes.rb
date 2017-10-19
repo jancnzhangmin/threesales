@@ -28,6 +28,7 @@ Rails.application.routes.draw do
       get 'getproductcontent'
       get 'getproname'
       get 'getrecepit'
+      get 'getbuycarfrom'
     end
   end
 

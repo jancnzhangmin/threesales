@@ -25,11 +25,11 @@ ActiveRecord::Schema.define(version: 20171018025419) do
 
   create_table "buycars", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "selleruser_id"
-    t.integer  "amount"
-    t.string   "status"
-    t.string   "ordernumber"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.float    "amount",        limit: 24
+    t.integer  "status"
+    t.integer  "ordernumber"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
     t.integer  "seller_id"
     t.integer  "user_id"
     t.string   "remark"
