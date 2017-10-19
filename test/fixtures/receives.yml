@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  buycar_id: 1
+  name: MyString
+  tel: MyString
+  region: MyString
+  address: MyString
+
+two:
+  buycar_id: 1
+  name: MyString
+  tel: MyString
+  region: MyString
+  address: MyString
