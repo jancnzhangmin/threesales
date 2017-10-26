@@ -29,6 +29,12 @@ Rails.application.routes.draw do
       get 'getproname'
       get 'getrecepit'
       get 'getbuycarfrom'
+      get 'getbuycarlist'
+      get 'getreceoitadd'
+      get 'getrecepitone'
+      get 'getreceoitedit'
+      get 'getreceoitdel'
+      get 'getreceoitdefault'
     end
   end
 
