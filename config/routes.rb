@@ -7,7 +7,7 @@ Rails.application.routes.draw do
     resources :admins
     resources :sellerusers
     resources :buycars
-
+    resources :notices
   end
 
   resources :logistics
@@ -35,6 +35,7 @@ Rails.application.routes.draw do
       get 'getreceoitedit'
       get 'getreceoitdel'
       get 'getreceoitdefault'
+      get 'getnotice'
     end
   end
 

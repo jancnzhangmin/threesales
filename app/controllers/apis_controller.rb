@@ -1,6 +1,6 @@
 class ApisController < ApplicationController
 
-  before_action :set_openid, only: [:getbuycarlist, :getproductlist, :getrecepit, :getreceoitadd, :getrecepitone, :getreceoitedit, :getreceoitdel, :getreceoitdefault]
+  before_action :set_openid, only: [:getnotice, :getbuycarlist, :getproductlist, :getrecepit, :getreceoitadd, :getrecepitone, :getreceoitedit, :getreceoitdel, :getreceoitdefault]
   def set_openid
     if params[:openid]
       seller=Selleruser.where(" openid = ? ",params[:openid])
@@ -14,6 +14,26 @@ class ApisController < ApplicationController
       end
     end
   end
+  class Noticecla
+    attr :id,true
+    attr :img,true
+  end
+  def getnotice
+    if params[:openid]
+      notice = Notice.where('seller_id = ? and status = 1',@sellerid[0].id).order('updated_at desc').limit(5)
+    else
+      notice = Notice.where('recommend = 1').order('updated_at desc').limit(5)
+    end
+    noticeall = Array.new
+    notice.each do |pro|
+      nclass = Noticecla.new
+      nclass.id = pro.id
+      nclass.img = pro.noticeimg.url
+      noticeall.push(nclass)
+    end
+    render json: params[:callback]+'({"notice":' + noticeall.to_json + '})',content_type: "application/javascript"
+  end
+
   def getseller
     seller = Seller.find(params[:sellerid])
     render json: params[:callback]+'({"seller":' + seller.to_json + '})',content_type: "application/javascript"
@@ -24,9 +44,9 @@ class ApisController < ApplicationController
     attr :productimg,true
   end
   def getproductlist
-    productls=Product.all
+    productls=Product.where('status = 1')
     if params[:openid]
-      productls=Product.where('seller_id = ?',@sellerid[0].id)
+      productls=Product.where('seller_id = ? and status = 1',@sellerid[0].id)
     end
     productarr = Array.new
     productls.each do |pro|

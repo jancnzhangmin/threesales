@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171019101555) do
+ActiveRecord::Schema.define(version: 20171030032557) do
 
   create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "seller_id"
@@ -56,6 +56,9 @@ ActiveRecord::Schema.define(version: 20171019101555) do
     t.string   "noticeimg_content_type"
     t.integer  "noticeimg_file_size"
     t.datetime "noticeimg_updated_at"
+    t.integer  "seller_id"
+    t.integer  "status"
+    t.integer  "recommend"
   end
 
   create_table "orders", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

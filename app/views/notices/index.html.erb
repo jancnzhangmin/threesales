@@ -17,15 +17,25 @@
             <tr>
               <td><%= notice.noticeimg %></td>
               <td>
-                <%= link_to '编辑',edit_notice_path(notice) %>
-                <%= link_to '删除', notice, method: :delete, data: { confirm: '确认删除?' } %></td>
+                <% if @seller%>
+                    <%= link_to '编辑',edit_seller_notice_path(@seller,notice) %>
+                    <%= link_to '删除', notice, method: :delete, data: { confirm: '确认删除?' } %>
+                <%else%>
+                    <%= link_to '编辑',edit_notice_path(notice) %>
+                    <%= link_to '删除', notice, method: :delete, data: { confirm: '确认删除?' } %>
+                <%end%>
+              </td>
             </tr>
         <% end %>
         </tbody>
       </table>
       <%= link_to "返回",notices_path(@notice),class: "btn btn-w-m btn-info " %>
       <div class="btn-group  btn-w-m pull-right" role="group">
-        <%= link_to "新增",new_notice_path,class: "btn btn-w-m btn-primary " %>
+        <% if @seller%>
+            <%= link_to "新增",new_seller_notice_path,class: "btn btn-w-m btn-primary " %>
+        <%else%>
+            <%= link_to "新增",new_notice_path,class: "btn btn-w-m btn-primary " %>
+        <%end%>
       </div>
       <br>
     </div>
