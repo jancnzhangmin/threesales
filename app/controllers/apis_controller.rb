@@ -1,6 +1,7 @@
 class ApisController < ApplicationController
 
   before_action :set_openid, only: [:getnotice, :getbuycarlist, :getproductlist, :getrecepit, :getreceoitadd, :getrecepitone, :getreceoitedit, :getreceoitdel, :getreceoitdefault]
+  skip_before_action :verify_authenticity_token, :only => [:postsubscribe]
   def set_openid
     if params[:openid]
       seller=Selleruser.where(" openid = ? ",params[:openid])
@@ -84,6 +85,7 @@ class ApisController < ApplicationController
   end
 
   def getproductcontent
+    debugger
     productnas=Product.find(params[:id])
     productarr = Array.new
     ser=Seller.find(productnas.seller_id)
@@ -93,7 +95,7 @@ class ApisController < ApplicationController
     pcont.content = productnas.content
     productarr.push(pcont)
 
-    render json: params[:callback]+'({"products":'+productarr.to_json+'})',content_type: "application/javascript"
+    render json: params[:callback]+'({"products":'+ productarr.to_json + '})',content_type: "application/javascript"
   end
   class Adder
     attr :id, true
@@ -103,6 +105,20 @@ class ApisController < ApplicationController
     attr :address, true
     attr :choice, true
   end
+
+  def postsubscribe
+    weixinlog=Weixinlog.new
+    weixinlog.ToUserName=params[:ToUserName]
+    weixinlog.FromUserName=params[:FromUserName]
+    weixinlog.CreateTime=params[:CreateTime]
+    weixinlog.MsgType=params[:MsgType]
+    weixinlog.Event=params[:Event]
+    weixinlog.EventKey=params[:EventKey]
+    weixinlog.Ticket=params[:Ticket]
+    weixinlog.save
+    render json: '({"subscribe":200})',content_type: "application/javascript"
+  end
+
   def getrecepit
     recepit = Recepitaddre.where('user_id = ?',@userid[0].id)
     addrarr = Array.new

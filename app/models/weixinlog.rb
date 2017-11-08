@@ -1,0 +1,3 @@
+class Weixinlog < ApplicationRecord
+
+end

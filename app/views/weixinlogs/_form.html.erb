@@ -1,0 +1,55 @@
+
+<div class="ibox-content form-horizontal m-t">
+  <div class="form-group">
+    <%= form_for(@weixinlog,:html => {:class=>'form-horizontal m-t',:multipart => true}) do |f| %>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">开发者微信号：</label>
+          <div class="col-sm-6">
+            <%= f.text_field :ToUserName,class:"form-control",id:'name' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">发送方帐号（一个OpenID）：</label>
+          <div class="col-sm-6">
+            <%= f.text_field :FromUserName,class:"form-control",id:'name' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">消息创建时间 （整型）：</label>
+          <div class="col-sm-6">
+            <%= f.text_field :CreateTime,class:"form-control",id:'name' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">消息类型，event：</label>
+          <div class="col-sm-6">
+            <%= f.text_field :MsgType,class:"form-control",id:'name' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">事件类型，SCAN：</label>
+          <div class="col-sm-6">
+            <%= f.text_field :Event,class:"form-control",id:'name' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">事件KEY值：</label>
+          <div class="col-sm-6">
+            <%= f.text_field :EventKey,class:"form-control",id:'name' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">二维码ticket：</label>
+          <div class="col-sm-6">
+            <%= f.text_field :Ticket,class:"form-control",id:'name' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"></label>
+          <div class="col-sm-6 text-right">
+            <%= f.submit '确定',class: "btn btn-w-m btn-primary",id:'smt' %>&nbsp;<%= link_to "返回",weixinlogs_path,class: "btn btn-w-m btn-primary " %>
+          </div>
+        </div>
+    <% end %>
+  </div>
+</div>

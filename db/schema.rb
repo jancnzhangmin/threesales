@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171030032557) do
+ActiveRecord::Schema.define(version: 20171107092051) do
 
   create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "seller_id"
@@ -162,6 +162,18 @@ ActiveRecord::Schema.define(version: 20171030032557) do
     t.datetime "vcodetime"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
+  end
+
+  create_table "weixinlogs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "ToUserName"
+    t.string   "FromUserName"
+    t.string   "CreateTime"
+    t.string   "MsgType"
+    t.string   "Event"
+    t.string   "EventKey"
+    t.string   "Ticket"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
   end
 
 end

@@ -34,11 +34,13 @@ Rails.application.routes.draw do
       get 'getrecepitone'
       get 'getreceoitedit'
       get 'getreceoitdel'
-      get 'getreceoitdefault'
+      get 'getreceoitdefa'
       get 'getnotice'
+      post 'postsubscribe'
     end
+
   end
 
-
+  resources :weixinlogs
 
 end
