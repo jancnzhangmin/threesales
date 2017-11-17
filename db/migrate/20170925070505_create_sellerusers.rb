@@ -6,7 +6,7 @@ class CreateSellerusers < ActiveRecord::Migration[5.0]
       t.integer :up_id
       t.string :openid
       t.string :qrcode
-      t.datetime :qrcodetime
+      t.integer :qrcodetime
 
       t.timestamps
     end

@@ -8,26 +8,18 @@
       <table class="table table-hover table-bordered text-center">
         <thead>
         <tr>
-          <th class="text-center">开发者微信号</th>
-          <th class="text-center">发送方OpenID</th>
-          <th class="text-center">消息创建时间</th>
-          <th class="text-center">消息类型</th>
-          <th class="text-center">事件类型</th>
-          <th class="text-center">事件KEY值</th>
-          <th class="text-center">二维码ticket</th>
+          <th class="text-center">地址参数</th>
+          <th class="text-center">body参数</th>
+          <th class="text-center">创建时间</th>
           <th class="text-center">操作</th>
         </tr>
         </thead>
         <tbody>
         <% @weixinlog.each do |weixinlog| %>
             <tr>
-              <td><%= weixinlog.ToUserName %></td>
-              <td><%= weixinlog.FromUserName %></td>
-              <td><%= weixinlog.CreateTime %></td>
-              <td><%= weixinlog.MsgType %></td>
-              <td><%= weixinlog.Event %></td>
-              <td><%= weixinlog.EventKey %></td>
-              <td><%= weixinlog.Ticket %></td>
+              <td><%= weixinlog.url %></td>
+              <td><%= weixinlog.log %></td>
+              <td><%= weixinlog.created_at %></td>
               <td>
                 <%= link_to '编辑',edit_weixinlog_path(weixinlog) %>
                 <%= link_to '删除', weixinlog, method: :delete, data: { confirm: '确认删除?' } %></td>

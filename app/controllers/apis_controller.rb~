@@ -252,67 +252,26 @@ class ApisController < ApplicationController
   end
 
   def weixingetpost
-    result=request.body.read
-    res=result.to_s
-    if res.match("xml")[0]
-      weixin = Hash.from_xml(res)
-      weixin=weixin["xml"]
-      if weixin["Event"] == "subscribe" && weixin["MsgType"] == "event"
-        seller=Selleruser.where("openid = ?",weixin["FromUserName"])
-        if seller.length == 0
-          seller=Selleruser.where("qrcode = ?",weixin["EventKey"])
-          sellernew=Selleruser.new
-          sellernew.openid=weixin["FromUserName"]
-          if seller.length>0
-            sellernew.up_id=seller[0].id
-            sellernew.seller_id=seller[0].seller_id
-          else
-            selname=Seller.where("weixinname = ? ",weixin["ToUserName"])
-            sellernew.seller_id=selname[0].id
-          end
-
-          user=User.new
-          user.save
-          sellernew.user_id=user.id
-          sellernew.save
-          selname=Seller.find(sellernew.seller_id)
-          token = getaccesstoken(sellernew.seller_id)
-          postcustomtext(token,sellernew.openid,"恭喜您，已成功关注“"+selname.name.to_s+'”')
-          if seller.length>0
-            token = getaccesstoken(seller[0].seller_id)
-            postcustomtext(token,seller[0].openid,"恭喜您，有一人通过扫描您的二维码关注了“"+selname.name.to_s+'”')
-          end
-        else
-          token = getaccesstoken(seller[0].seller_id)
-          postcustomtext(token,seller[0].openid,"欢迎您再次回来")
-        end
-      end
-    end
+    debugger
     weixinlog=Weixinlog.new
+    result=request.body.read
     weixinlog.url = request.query_parameters.to_s
-    weixinlog.log = res
+    if result.match("xml")[0]
+      doc=Document.new(result)
+      #doc.elements.each("xml/ToUserName"){|e| weixinlog.log=e.text}
+      weixinlog.log = doc.to_s
+    else
+      obj=JSON.parser(result)
+      weixinlog.log = obj.to_s
+    end
     weixinlog.save
+    #result = request.body.read
+    #obj=JSON.parser(result)
+    #Log.create(log:result)
     if params[:echostr]
       render json: params[:echostr]
     end
     render json: '({"subscribe":200})',content_type: "application/javascript"
   end
 
-  def getweixinimg
-    seller=Selleruser.where(" openid = ? ",params[:openid])
-    buycar=Buycar.where("selleruser_id = ? and status >0 and status <10",seller[0].id)
-    if buycar.length > 0
-      token = getaccesstoken(seller[0].seller_id)
-      ticket=getticket(token,seller[0].id)
-      render json: params[:callback]+'({"ticket":"'+ ticket+'","err":"正确"})',content_type: "application/javascript"
-    else
-      render json: params[:callback]+'({"err":"错误"})',content_type: "application/javascript"
-    end
-  end
-
-  def getwxopenid
-    seller = Seller.find(params[:state])
-    openid = getopenid(seller.appid,seller.secret,params[:code])
-    redirect_to "threefront.posan.biz?openid=" + openid.to_s
-  end
 end

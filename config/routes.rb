@@ -36,7 +36,10 @@ Rails.application.routes.draw do
       get 'getreceoitdel'
       get 'getreceoitdefa'
       get 'getnotice'
-      post 'postsubscribe'
+      post 'weixingetpost'
+      get 'weixingetpost'
+      get 'getweixinimg'
+      get 'getwxopenid'
     end
 
   end

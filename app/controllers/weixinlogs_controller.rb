@@ -43,6 +43,6 @@ class WeixinlogsController < ApplicationController
     @weixinlog = Weixinlog.find(params[:id])
   end
   def weixinlog_params
-    params.require(:weixinlog).permit(:ToUserName,:FromUserName,:CreateTime,:MsgType,:Event,:EventKey,:Ticket)
+    params.require(:weixinlog).permit(:log, :url)
   end
 end

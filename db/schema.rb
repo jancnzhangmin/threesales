@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171107092051) do
+ActiveRecord::Schema.define(version: 20171115071234) do
 
   create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "seller_id"
@@ -135,6 +135,12 @@ ActiveRecord::Schema.define(version: 20171107092051) do
     t.string   "sellerimage_content_type"
     t.integer  "sellerimage_file_size"
     t.datetime "sellerimage_updated_at"
+    t.string   "access_token"
+    t.datetime "access_cardate"
+    t.integer  "access_time"
+    t.string   "appid"
+    t.string   "secret"
+    t.string   "weixinname"
   end
 
   create_table "sellerusers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -142,10 +148,12 @@ ActiveRecord::Schema.define(version: 20171107092051) do
     t.integer  "user_id"
     t.integer  "up_id"
     t.string   "openid"
+    t.integer "qrcodetime"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.string   "qrcode_ticket"
+    t.datetime "qrcode_cardate"
     t.string   "qrcode"
-    t.datetime "qrcodetime"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "userpwds", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -165,15 +173,10 @@ ActiveRecord::Schema.define(version: 20171107092051) do
   end
 
   create_table "weixinlogs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "ToUserName"
-    t.string   "FromUserName"
-    t.string   "CreateTime"
-    t.string   "MsgType"
-    t.string   "Event"
-    t.string   "EventKey"
-    t.string   "Ticket"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.text     "log",          limit: 65535
+    t.string   "url"
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
   end
 
 end

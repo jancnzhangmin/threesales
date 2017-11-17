@@ -84,6 +84,30 @@ $(document).ready(function(){
           </div>
         </div>
         <div class="form-group">
+          <label class="col-sm-3 control-label">商家appid：</label>
+          <div class="col-sm-6">
+            <%= f.text_field :appid,class:"form-control",id:'tel' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">商家secret：</label>
+          <div class="col-sm-6">
+            <%= f.text_field :secret,class:"form-control",id:'tel' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">appid申请微信号：</label>
+          <div class="col-sm-6">
+            <%= f.text_field :weixinname,class:"form-control",id:'tel' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">token：</label>
+          <div class="col-sm-6">
+            <%= f.text_field :access_token,class:"form-control",id:'tel' %>
+          </div>
+        </div>
+        <div class="form-group">
           <label class="col-sm-3 control-label">商家图片：</label>
           <div class="col-sm-6 text-center">
             <%= f.file_field :sellerimage,class:"form-control",:onchange => "readURL(this)" %>
