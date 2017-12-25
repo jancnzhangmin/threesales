@@ -46,9 +46,10 @@ $(document).ready(function(){
             reader.readAsDataURL(input.files[0]);
         }
     }
-</script>
 
-<div class="ibox-content form-horizontal m-t">
+
+</script>
+<div class="ibox-content form-horizontal m-t" >
   <div class="form-group">
     <%= form_for(@seller,:html => {:class=>'form-horizontal m-t',:multipart => true}) do |f| %>
         <div class="form-group">

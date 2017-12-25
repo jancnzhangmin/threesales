@@ -1,0 +1,413 @@
+<%= render 'layerbegin' %>
+<style>
+  .dropdown-menu{
+      min-width: 91px;
+  }
+  .btn-inherit{
+      background: inherit;
+      border: 1px solid #e7e7eb;
+  }
+  .wizard > .content > .body {
+      position: inherit;
+  }
+
+</style>
+<script>
+    var sid
+    var delid="0";
+    var ischeck=0;
+    $(document).ready(function(){
+        sid=$("#wizard").attr('typeid');
+        for(var i=1;i<4;i++)
+        {
+            $("#new"+i).click(function(){
+                myFunction(this);
+            });
+            $("#btnmenu"+i).click(function(){
+                myshowmenu(this);
+            });
+            for(var j=1;j<6;j++)
+            {
+                $("#btnsub"+i+j).click(function(){
+                    myshowmenu(this);
+                });
+            }
+        }
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green'
+        });
+        $('#statuscheck').on('ifChecked',function(event){
+            var _name=document.getElementById($("#wizard-p-0").attr('btnname'));
+            _name.setAttribute('typetype',"20");
+            $("#userurl")[0].style.display = 'none';
+            ischeck=1;
+        });
+        $('#statuscheck').on('ifUnchecked',function(event){
+            var _name=document.getElementById($("#wizard-p-0").attr('btnname'));
+            _name.setAttribute('typetype',"2");
+            $("#userurl")[0].style.display = 'block';
+            ischeck=0;
+        });
+        $("#savebtn").click(function(){
+            var _name=document.getElementById($("#wizard-p-0").attr('btnname'));
+            if(_name.id.indexOf('btnsub') == 0)
+                _name.innerHTML=$('#userName').val();
+            else
+                _name.innerHTML=$('#userName').val() +' <span class="caret"></span>';
+            if(ischeck == 0)
+                _name.setAttribute('typeurl',$('#userurl').val());
+            /*else
+                _name.setAttribute('typeurl','');*/
+        });
+
+        $("#synchrobtn").click(function(){
+
+            for(var i=1;i<4;i++)
+            {
+                if($("#btnmenu"+i).length > 0)
+                {
+                    var id=$("#btnmenu"+i).attr('typeid');
+                    var name=$("#btnmenu"+i).text().trim();
+                    var url=$("#btnmenu"+i).attr('typeurl');
+                    var type=$("#btnmenu"+i).attr('typetype');
+                    $.ajax({
+                        async : false,
+                        url : 'http://'+window.location.host + "/weixinmenus/saveweixin",
+                        type : "GET",
+                        dataType : 'jsonp',
+                        jsonp : 'callback',
+                        data : {
+                            "id" : id,
+                            "name" : name,
+                            "url" : url,
+                            "number" : i,
+                            "type" : type,
+                            "sid" : sid
+                        },
+                        timeout : 5000,
+                        success : function(jsonstr) {
+                            $("#btnsub"+i+j).attr('typeid',jsonstr.weixinmenu);
+                        },
+                        error : function(xhr) {
+                            toastr.error("错误，请检查网络");
+                        }
+                    });
+                }
+                for(var j=1;j<6;j++)
+                {
+                    if ($("#btnsub"+i+j).length > 0)
+                    {
+                        var id=$("#btnsub"+i+j).attr('type');
+                        var name=$("#btnsub"+i+j).text().replace(/^\s+|\s+$/g,"");
+                        var url=$("#btnsub"+i+j).attr('typeurl');
+                        var upid=$("#btnmenu"+i).attr('typeid');
+                        var type=$("#btnsub"+i+j).attr('typetype');
+                        $.ajax({
+                            async : false,
+                            url : 'http://'+window.location.host + "/weixinmenus/saveweixin",
+                            type : "GET",
+                            dataType : 'jsonp',
+                            jsonp : 'callback',
+                            data : {
+                                "id" : id,
+                                "name" : name,
+                                "url" : url,
+                                "upid" : upid,
+                                "number" : j,
+                                "type" : type,
+                                "sid" : sid
+                            },
+                            timeout : 5000,
+                            success : function(jsonstr) {
+                                $("#btnsub"+i+j).attr('typeid',jsonstr.weixinmenu);
+                            },
+                            error : function(xhr) {
+                                toastr.error("错误，请检查网络");
+                            }
+                        });
+                    }
+                }
+            }
+            $.ajax({
+                async : false,
+                url : 'http://'+window.location.host + "/weixinmenus/delid",
+                type : "GET",
+                dataType : 'jsonp',
+                jsonp : 'callback',
+                data : {
+                    "id" : delid
+                },
+                timeout : 5000,
+                success : function(jsonstr) {
+
+                },
+                error : function(xhr) {
+                    toastr.error("错误，请检查网络");
+                }
+            });
+            $.ajax({
+                async : false,
+                url : 'http://'+window.location.host + "/weixinmenus/loading",
+                type : "GET",
+                dataType : 'jsonp',
+                jsonp : 'callback',
+                data : {
+                    "id" : sid
+                },
+                timeout : 5000,
+                success : function(jsonstr) {
+                    toastr.error("同步完成！");
+                },
+                error : function(xhr) {
+                    toastr.error("错误，请检查网络");
+                }
+            });
+        });
+
+        $("#delbtn").click(function(){
+
+            var _name=document.getElementById($("#wizard-p-0").attr('btnname'));
+            if(_name.getAttribute("typeid") != null)
+            {
+                delid = _name.getAttribute("typeid") + "," + delid;
+            }
+            if(_name.id.indexOf('btnsub') == 0)
+            {
+                var str=_name.id;
+                str = str.substring(0,str.length-1);
+                str = str.replace('btnsub','new');
+                $('#'+_name.id).parent().remove();
+                $("#"+str)[0].style.display = 'block';
+            }
+            else
+            {
+                $('#'+_name.id).parent().remove();
+                $("#newbtn")[0].style.display = 'block';
+            }
+        });
+
+        $("#newbtn").click(function(){
+
+            var a = '<div class="btn-group col-xs-4 dropup" style="padding-left:0px;padding-right:0px;margin-left: 0px;"> <button data-toggle="dropdown" id="btnmenu" class="btn btn-inherit dropdown-toggle col-xs-12 btn-lg" typeurl="" typeid="" typetype="2" style="min-height: 45px;font-size: 14px;margin-bottom: 0px;"> 新建按钮 <span class="caret"></span> </button> <ul class="dropdown-menu" role="menu"> <li class="divider"></li> <li> <a href="javascript:void(0)" id="new" type="newid">新增</a> </li> </ul> </div>'
+            $("#newbtn").before(a);
+            for(var i=1;i<4;i++)
+            {
+                if($("#btnmenu"+i).length == 0)
+                {
+                    $("#btnmenu").attr('id','btnmenu'+i);
+                    $("#new").attr('id','new'+i);
+                    $("#new"+i).click(function(){
+                        myFunction(this);
+                    });
+                    $("#btnmenu"+i).click(function(){
+                        myshowmenu(this);
+                    });
+                    if(i==3)
+                    {
+                        $("#newbtn")[0].style.display = 'none';
+                    }
+                    $.ajax({
+                        async : false,
+                        url : 'http://'+window.location.host + "/weixinmenus/saveid",
+                        type : "GET",
+                        dataType : 'jsonp',
+                        jsonp : 'callback',
+                        data : {
+                            "sellerid" : sid,
+                            "number" : i
+                        },
+                        timeout : 5000,
+                        success : function(jsonstr) {
+                            $("#btnmenu"+i).attr('typeid',jsonstr.weixinmenu);
+                        },
+                        error : function(xhr) {
+                            toastr.error("错误，请检查网络");
+                        }
+                    });
+                    break;
+                }
+            }
+
+        });
+    });
+    function myshowmenu(sefi)
+    {
+        $("#wizard-p-0").attr('btnname',sefi.id);
+        if(sefi.getAttribute("typetype") == '20')
+        {
+            $('#statuscheck').iCheck('check');
+            $("#userurl")[0].style.display = 'none';
+            $('#userurl').val("");
+        }
+        else if(sefi.getAttribute("typetype") == '2')
+        {
+            $('#statuscheck').iCheck('uncheck');
+            $("#userurl")[0].style.display = 'block';
+            $('#userurl').val($("#"+sefi.id).attr('typeurl'));
+        }
+        $('#userName').val(sefi.textContent.trim());
+    }
+    function myFunction(sefi)
+    {
+        $('#'+sefi.id).parent().prev().before('<li><a href="javascript:void(0)" id="btnsub" typetype="2">新建下级菜单 </a> </li>');
+        var btn=sefi.id.replace('new','');
+        for(var i=1;i<6;i++)
+        {
+            if($("#btnsub"+btn+i).length == 0)
+            {
+                $("#btnsub").attr('id','btnsub'+btn+i);
+                $("#btnsub"+btn+i).click(function(){
+                    myshowmenu(this);
+                });
+                if(i==5)
+                {
+                    $("#"+sefi.id)[0].style.display = 'none';
+                }
+                break;
+            }
+        }
+    }
+</script>
+<div class="col-lg-12">
+  <div class="ibox float-e-margins">
+    <div class="ibox-title">
+      <h3>微信菜单管理</h3>
+    </div>
+    <div class="ibox-content">
+      <form class="form-horizontal">
+        <div  class="form-group">
+          <div class="col-xs-4">
+            <div style="width: 320px;height: 580px;position: relative;border: 1px solid #e7e7eb;">
+              <div style="background: transparent url(../../images/bg_mobile_head_default3a7b38.png) no-repeat 0 0;width: 100%;height: 100%;">
+              </div>
+              <div  style="position: absolute;bottom: 0;left: 0;right: 0;background: transparent url(../../images/bg_mobile_foot_default3a7b38.png) no-repeat 0 0;">
+                <div style="width: 13.5%;float: left;">
+
+                </div>
+                <div style="width: 86.5%;float: right;" class="btn-group">
+                  <% @weixinmenuhome.each do |weixinmenu| %>
+                      <div class="btn-group col-xs-4 dropup" style="padding-left:0px;padding-right:0px;margin-left: 0px;">
+                        <button data-toggle="dropdown" id="btnmenu<%=weixinmenu.number%>" class="btn btn-inherit dropdown-toggle col-xs-12 btn-lg" typeurl="<%=weixinmenu.url%>" typeid="<%=weixinmenu.id%>" typetype="<%=weixinmenu.gettype%>" style="min-height: 45px;font-size: 14px;margin-bottom: 0px;">
+                          <%= weixinmenu.name %> <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                          <% @weixinmenusub.each do |weixinsub| %>
+                              <% if weixinsub.up_id == weixinmenu.id%>
+                                  <li>
+                                    <a href="javascript:void(0)" id="btnsub<%=weixinmenu.number%><%=weixinsub.number%>" type="<%=weixinsub.id%>" typetype="<%=weixinsub.gettype%>"><%= weixinsub.name %></a>
+                                  </li>
+                              <% end %>
+                          <% end %>
+                          <li class="divider"></li>
+                          <li>
+                            <a href="javascript:void(0)" id="new<%=weixinmenu.number%>" >新增</a>
+                          </li>
+                        </ul>
+                      </div>
+                  <% end %>
+                  <% if @weixinmenuhome.length <= 3 %>
+                      <button class="btn btn-inherit col-xs-4 btn-lg" type="button" style="margin-bottom: 0px;" id="newbtn">新增</button>
+                  <%else%>
+                      <button class="btn btn-inherit col-xs-4 btn-lg" type="button" style="margin-bottom: 0px;display:none;" id="newbtn">新增</button>
+                  <%end%>
+
+                </div>
+
+
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xs-8">
+            <div id="wizard" role="application" class="wizard clearfix" typeid="<%= @seller.id%>">
+              <div class="steps clearfix">
+                <ul role="tablist">
+                  <li role="tab" class=" current" aria-disabled="false" aria-selected="true">
+                    <a id="wizard-t-0" href="javascript:void(0)" aria-controls="wizard-p-0"><span class="number">1.</span> 修改URL</a>
+                  </li>
+                  <li role="tab" class="done" aria-disabled="false" aria-selected="false">
+                    <a id="wizard-t-1" href="javascript:void(0)" aria-controls="wizard-p-1"><span class="number">2.</span> 修改内容</a>
+                  </li>
+                  <li role="tab" class="last done" aria-disabled="false" aria-selected="false">
+                    <a id="wizard-t-2" href="javascript:void(0)" aria-controls="wizard-p-2"><span class="number">3.</span> 修改素材</a>
+                  </li>
+                </ul>
+              </div>
+              <div class="content clearfix">
+                <h1 id="wizard-h-0" tabindex="-1" class="title">修改URL</h1>
+                <div class="step-content body current" id="wizard-p-0" role="tabpanel" aria-labelledby="wizard-h-0" aria-hidden="true" style="display: block;">
+                  <div class="col-sm-8">
+                  <h2>修改URL</h2>
+                  </div>
+                  <div class="col-sm-4" align="right">
+                  <label>
+                    <input type="checkbox" class="i-checks" id="statuscheck"> 商城</label>
+                    </div>
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <div class="form-group">
+                        <label>菜单名 *</label>
+                        <input id="userName" name="userName" type="text" class="form-control required" aria-required="true">
+                      </div>
+                      <div class="form-group">
+                        <label>链接地址 *</label>
+                        <input id="userurl" name="userurl" type="text" class="form-control required" aria-required="true">
+                      </div>
+                    </div>
+                    <button class="btn btn-warning col-xs-4" type="button" id="savebtn">应用</button>
+                    <button class="btn btn-danger col-xs-4 " type="button" id="delbtn">删除</button>
+                  </div>
+                </div>
+
+                <h1 id="wizard-h-1" tabindex="-1" class="title">第二步</h1>
+                <div class="step-content body" id="wizard-p-1" role="tabpanel" aria-labelledby="wizard-h-1" aria-hidden="true" style="display: none;">
+                  <h2>第二步</h2>
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <div class="form-group">
+                        <label>用户名 *</label>
+                        <input id="userName" name="userName" type="text" class="form-control required" aria-required="true">
+                      </div>
+                      <div class="form-group">
+                        <label>密码 *</label>
+                        <input id="password" name="password" type="text" class="form-control required" aria-required="true">
+                      </div>
+                      <div class="form-group">
+                        <label>确认密码 *</label>
+                        <input id="confirm" name="confirm" type="text" class="form-control required" aria-required="true">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <h1 id="wizard-h-2" tabindex="-1" class="title current">第三步</h1>
+                <div class="step-content body " id="wizard-p-2" role="tabpanel" aria-labelledby="wizard-h-2" aria-hidden="false" style="display: none;">
+                  <h2>第三步</h2>
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <div class="form-group">
+                        <label>用户名 *</label>
+                        <input id="userName" name="userName" type="text" class="form-control required" aria-required="true">
+                      </div>
+                      <div class="form-group">
+                        <label>密码 *</label>
+                        <input id="password" name="password" type="text" class="form-control required" aria-required="true">
+                      </div>
+                      <div class="form-group">
+                        <label>确认密码 *</label>
+                        <input id="confirm" name="confirm" type="text" class="form-control required" aria-required="true">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button class="btn btn-primary btn-block" type="button" id="synchrobtn">同步到微信</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<%=render 'layerend' %>

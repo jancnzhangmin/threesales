@@ -1,39 +1,4 @@
 <%= render 'layerbegin' %>
-<script>
-$(document).ready(function(){
-    $(".btnclick").click(function(){
-        buyid=this.type;
-        layer.open({
-            type: 2,
-            title: '物流单号管理',
-            maxmin: true,
-            shadeClose: true, //点击遮罩关闭层
-            area : ['800px' , '520px'],
-            content: 'buycars/'+this.type+'/logisticbuycar/index',
-            end: function(){
-                $.ajax({
-                    async : false,
-                    url : "./buycars/editstatus",
-                    type : "GET",
-                    dataType : 'jsonp',
-                    jsonp : 'callback',
-                    data : {
-                        "id" : buyid
-                    },
-                    timeout : 5000,
-                    success : function(jsonstr) {
-                        window.location.reload();
-
-                    },
-                    error : function(xhr) {
-                        toastr.error("错误，请检查网络");
-                    }
-                });
-            }
-        });
-    })
-});
-</script>
 <div class="col-lg-12">
   <div class="ibox float-e-margins">
     <div class="ibox-title">
@@ -43,7 +8,7 @@ $(document).ready(function(){
       <table class="table table-hover table-bordered text-center">
         <thead>
         <tr>
-          <th class="text-center">价格</th>
+          <th class="text-center">数量</th>
           <th class="text-center">订单状态</th>
           <th class="text-center">订单号</th>
           <th class="text-center">备注</th>
@@ -75,7 +40,7 @@ $(document).ready(function(){
                 <%= link_to '删除', [@seller,f], method: :delete, data: { confirm: '确认删除?' } %>
               <% end %>
               <% if f.status == 1%>
-                <a class="btnclick" type=<%= f.id%>>发货</a>
+                <%= link_to '发货', logisticbuycars_path %>
               <% end %>
               </td>
             </tr>

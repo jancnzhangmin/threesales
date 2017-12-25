@@ -1,0 +1,57 @@
+<script>
+    function dele(date){
+        var id = date.type
+        $.ajax({
+            async : false,
+            url : 'http://'+window.location.host + "/logisticbuycar/destroy",
+            type : "GET",
+            dataType : 'jsonp',
+            jsonp : 'callback',
+            data : {
+                "id" : id
+            },
+            timeout : 5000,
+            success : function(jsonstr) {
+                window.location.reload();
+
+            },
+            error : function(xhr) {
+                toastr.error("错误，请检查网络");
+            }
+        });
+    }
+</script>
+<div class="ibox-content form-horizontal m-t" style="margin-bottom:0px;margin-top: 0px;">
+    <div class="ibox-title">
+      <h3>物流单号管理</h3>
+    </div>
+    <div class="ibox-content">
+      <table class="table table-hover table-bordered text-center">
+        <thead>
+        <tr>
+          <th class="text-center">物流单号</th>
+          <th class="text-center">物流公司</th>
+          <th class="text-center">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @logisticorders.each do |logist| %>
+            <tr>
+
+              <td><%= logist.ordernumber %></td>
+              <td><%= logist.logistic.logistic %></td>
+
+              <td>
+                <%= link_to '编辑', (@editurl + '?id=' + logist.id.to_s) %>
+                <a href="javascript:void(0)" onclick="dele(this)" type=<%= logist.id%>>删除</a>
+              </td>
+            </tr>
+        <% end %>
+        </tbody>
+      </table>
+      <div class="btn-group  btn-w-m pull-right" role="group">
+        <%= link_to "新增",@newurl,class: "btn btn-w-m btn-primary " %>
+      </div>
+      <br>
+    </div>
+</div>

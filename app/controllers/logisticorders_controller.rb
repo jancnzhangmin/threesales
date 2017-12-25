@@ -20,6 +20,7 @@ class LogisticordersController < ApplicationController
   end
 
   def create
+    debugger
     @logisticorder = Logisticorder.new(logisticorder_params)
     respond_to do |format|
       if @logisticorder.save

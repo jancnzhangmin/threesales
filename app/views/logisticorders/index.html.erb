@@ -8,15 +8,14 @@
       <table class="table table-hover table-bordered text-center">
         <thead>
         <tr>
+          <th class="text-center">物流单号</th>
           <th class="text-center">物流公司</th>
           <th class="text-center">操作</th>
-        </tr>
-        </thead>
-        <tbody>
         <% @logisticorders.each do |logist| %>
             <tr>
 
               <td><%= logist.ordernumber %></td>
+              <td><%= logist.logistic.logistic %></td>
 
               <td>
                 <%= link_to '编辑', edit_logisticorder_path(logist) %>

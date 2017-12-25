@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171115071234) do
+ActiveRecord::Schema.define(version: 20171209081822) do
 
   create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "seller_id"
@@ -33,6 +33,12 @@ ActiveRecord::Schema.define(version: 20171115071234) do
     t.integer  "seller_id"
     t.integer  "user_id"
     t.string   "remark"
+    t.integer  "shopstatic"
+    t.float    "first",         limit: 24
+    t.float    "second",        limit: 24
+    t.float    "third",         limit: 24
+    t.string   "remarkuser"
+    t.integer  "num"
   end
 
   create_table "logisticorders", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -68,6 +74,13 @@ ActiveRecord::Schema.define(version: 20171115071234) do
     t.float    "price",      limit: 24
     t.datetime "created_at",            null: false
     t.datetime "updated_at",            null: false
+    t.float    "first",      limit: 24
+    t.float    "second",     limit: 24
+    t.float    "third",      limit: 24
+    t.string   "name"
+    t.string   "spec"
+    t.string   "model"
+    t.integer  "shopstatus"
   end
 
   create_table "productclas", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -148,12 +161,13 @@ ActiveRecord::Schema.define(version: 20171115071234) do
     t.integer  "user_id"
     t.integer  "up_id"
     t.string   "openid"
-    t.integer "qrcodetime"
+    t.integer  "qrcodetime"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
     t.string   "qrcode_ticket"
     t.datetime "qrcode_cardate"
     t.string   "qrcode"
+    t.integer  "repeatshop"
   end
 
   create_table "userpwds", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -168,15 +182,36 @@ ActiveRecord::Schema.define(version: 20171115071234) do
     t.string   "password_digest"
     t.string   "vcode"
     t.datetime "vcodetime"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.string   "name"
+    t.float    "third",           limit: 24
+    t.float    "senond",          limit: 24
+    t.float    "first",           limit: 24
+    t.float    "undthird",        limit: 24
+    t.float    "undsenond",       limit: 24
+    t.float    "undfirst",        limit: 24
   end
 
   create_table "weixinlogs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.text     "log",          limit: 65535
+    t.text     "log",        limit: 65535
     t.string   "url"
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
+  create_table "weixinmenus", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name"
+    t.integer  "gettype"
+    t.string   "url"
+    t.string   "key"
+    t.string   "media_id"
+    t.integer  "seller_id"
+    t.integer  "up_id"
+    t.integer  "number"
+    t.integer  "sitrue"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end

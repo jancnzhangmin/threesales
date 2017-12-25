@@ -1,0 +1,90 @@
+<script>
+    $(document).ready(function(){
+        $("#claselect").change(function(){
+            $("#clainput").val($("#claselect").val());
+        });
+        $("#quer").click(function(){
+            $("#clainput").val($("#claselect").val());
+            if($("#clainput").val()=="" || $("#clainput").val()=="0"){
+                toastr.error("请选择分类");
+                return false
+            }
+            if($('#ordernumber').val()==''){
+                toastr.error('物流单号不能为空');
+                return false;
+            }
+            var seller=0;
+            var buycar=0;
+            var id = $("#id").val();
+            var ordernumber = $("#ordernumber").val();
+            var logistic = $("#clainput").val();
+
+            ddr=window.location.pathname.split("/");
+            for(var i=0;i<ddr.length;i++)
+            {
+                if(ddr[i] == "sellers")
+                {
+                    seller=ddr[i+1]
+                }
+                if(ddr[i] == "buycars")
+                {
+                    buycar=ddr[i+1]
+                }
+            }
+            $.ajax({
+                async : false,
+                url : 'http://'+window.location.host + "/logisticbuycar/update",
+                type : "GET",
+                dataType : 'jsonp',
+                jsonp : 'callback',
+                data : {
+                    "seller_id" : seller,
+                    "buycar_id" : buycar,
+                    "id" : id,
+                    "ordernumber" : ordernumber,
+                    "logistic" : logistic
+                },
+                timeout : 5000,
+                success : function(jsonstr) {
+                    //window.history.go(-1);window.location.reload();
+                    window.location.href = './index';
+                },
+                error : function(xhr) {
+                    toastr.error("错误，请检查网络");
+                }
+            });
+
+        });
+    });
+</script>
+
+<div class="ibox-content form-horizontal m-t">
+  <div class="form-group">
+    <%= form_for([@logisticorder],:html => {:class=>'form-horizontal m-t',:multipart => true}) do |f| %>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">物流单号：</label>
+          <div class="col-sm-6">
+            <%= f.text_field :ordernumber,class:"form-control",id:'ordernumber' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">物流公司：</label>
+          <div class="col-sm-6">
+            <%= f.hidden_field :logistic_id,class:"form-control",id:'clainput' %>
+            <%= f.hidden_field :id,class:"form-control",id:'id' %>
+            <select class="form-control m-b" name="account" id="claselect">
+              <%= @logistics.each do |logistic|%>
+              <option value=<%=logistic.id%>><%= logistic.logistic %></option>
+              <% end %>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"></label>
+          <div class="col-sm-5 text-right">
+            <%= link_to "确定",@index,class: "btn btn-w-m btn-primary " ,id:"quer" %>&nbsp;<%= link_to "返回",@indurl,class: "btn btn-w-m btn-primary " %>
+          </div>
+        </div>
+    <% end %>
+  </div>
+</div>

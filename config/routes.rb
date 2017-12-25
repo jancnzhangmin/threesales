@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+
+  get 'logisticbuycar/update'
+  get 'logisticbuycar/destroy'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root :to => 'sellers#index'
   resources :sellers do
@@ -6,12 +9,22 @@ Rails.application.routes.draw do
     resources :products
     resources :admins
     resources :sellerusers
-    resources :buycars
+    resources :buycars do
+      #resources :logisticbuycar
+      get 'logisticbuycar/index'
+      get 'logisticbuycar/edit'
+      get 'logisticbuycar/new'
+      collection do
+        get 'editstatus'
+      end
+    end
     resources :notices
+    resources :weixinmenus
   end
 
   resources :logistics
   resources :logisticorders
+
 
   resources :recepitaddres
 
@@ -20,6 +33,15 @@ Rails.application.routes.draw do
   resources :users
 
   resources :notices
+
+  resources :weixinmenus do
+    collection do
+      get 'saveweixin'
+      get 'saveid'
+      get 'delid'
+      get 'loading'
+    end
+  end
 
   resources :apis do
     collection do
@@ -40,8 +62,16 @@ Rails.application.routes.draw do
       get 'weixingetpost'
       get 'getweixinimg'
       get 'getwxopenid'
+      get 'getbuycaradd'
+      get 'setreceive'
+      get 'getbuycarplay'
+      get 'getbuycarconfirm'
+      get 'getuserupname'
+      get 'setuserupname'
+      get 'getthreename'
+      get 'getsenondname'
+      get 'getreferralname'
     end
-
   end
 
   resources :weixinlogs
