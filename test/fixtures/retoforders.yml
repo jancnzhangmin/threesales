@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  selleruser_id: 1
+  userid: 1
+  usertab: MyString
+  textout: MyText
+  userip: MyString
+
+two:
+  selleruser_id: 1
+  userid: 1
+  usertab: MyString
+  textout: MyText
+  userip: MyString

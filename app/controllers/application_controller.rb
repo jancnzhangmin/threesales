@@ -110,6 +110,7 @@ class ApplicationController < ActionController::Base
     end
   end
   def geturl(id,url,sid)
+    sid=Seller.find(sid)
     url = url.to_s
     if (url.include? 'https://') != true
       if (url.include? 'http://') != true
@@ -120,7 +121,7 @@ class ApplicationController < ActionController::Base
       return url
     end
     if id == 20
-      return 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxfd2e870325b488e3&redirect_uri=http%3a%2f%2fthreeadmin.posan.biz%2fapis%2fgetwxopenid&response_type=code&scope=snsapi_base&state=' + sid.to_s + '#wechat_redirect'
+      return 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + sid.appid + '&redirect_uri=http%3a%2f%2fthreeadmin.posan.biz%2fapis%2fgetwxopenid&response_type=code&scope=snsapi_base&state=' + sid.id.to_s + '#wechat_redirect'
     end
   end
 end

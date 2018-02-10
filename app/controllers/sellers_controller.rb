@@ -60,7 +60,7 @@ end
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def seller_params
-    params.require(:seller).permit(:name, :summary, :tel, :address, :status, :shortname, :sellerimage, :appid, :secret, :weixinname)
+    params.require(:seller).permit(:name, :summary, :tel, :address, :status, :shortname, :sellerimage, :appid, :secret, :weixinname, :qrcode)
   end
 
 end

@@ -11,6 +11,11 @@ class Seller < ApplicationRecord
 
   has_many :weixinmenus
 
+  has_many :articles
+
   has_attached_file :sellerimage, :url => "/:attachment/:id/:basename.:extension",  :path => ":rails_root/public/:attachment/:id/:basename.:extension"
   do_not_validate_attachment_file_type :sellerimage
+
+  has_attached_file :qrcode, :url => "/:attachment/:id/:basename.:extension",  :path => ":rails_root/public/:attachment/:id/:basename.:extension"
+  do_not_validate_attachment_file_type :qrcode
 end

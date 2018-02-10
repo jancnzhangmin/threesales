@@ -1,0 +1,33 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Systemlogs</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Table</th>
+      <th>Userid</th>
+      <th>Userip</th>
+      <th>Textout</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @systemlogs.each do |systemlog| %>
+      <tr>
+        <td><%= systemlog.table %></td>
+        <td><%= systemlog.userid %></td>
+        <td><%= systemlog.userip %></td>
+        <td><%= systemlog.textout %></td>
+        <td><%= link_to 'Show', systemlog %></td>
+        <td><%= link_to 'Edit', edit_systemlog_path(systemlog) %></td>
+        <td><%= link_to 'Destroy', systemlog, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Systemlog', new_systemlog_path %>

@@ -148,27 +148,39 @@ function readURL(input) {
           </div>
         </div>
         <div class="form-group">
-          <label class="col-sm-3 control-label">一级百分比：</label>
+          <label class="col-sm-3 control-label">积分：</label>
+          <div class="col-sm-6">
+            <%= f.text_field :bpnum,class:"form-control"%>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">一级VIP价格：</label>
           <div class="col-sm-6">
             <%= f.text_field :sfirst,class:"form-control",id:'price' %>
           </div>
         </div>
         <div class="form-group">
-          <label class="col-sm-3 control-label">二级百分比：</label>
+          <label class="col-sm-3 control-label">二级VIP价格：</label>
           <div class="col-sm-6">
             <%= f.text_field :ssecond,class:"form-control",id:'price' %>
           </div>
         </div>
         <div class="form-group">
-          <label class="col-sm-3 control-label">三级百分比：</label>
+          <label class="col-sm-3 control-label">三级VIP价格：</label>
           <div class="col-sm-6">
             <%= f.text_field :sthird,class:"form-control",id:'price' %>
           </div>
         </div>
-         <div class="form-group">
+        <div class="form-group">
+          <label class="col-sm-3 control-label">VIP积分：</label>
+          <div class="col-sm-6">
+            <%= f.text_field :sbpnum,class:"form-control"%>
+          </div>
+        </div>
+        <div class="form-group">
           <label class="col-sm-3 control-label"></label>
           <div class="col-sm-6 text-right">
-            <%= f.submit '确定',class: "btn btn-w-m btn-primary",id:'smt' %>&nbsp;<%= link_to "返回",seller_products_path,class: "btn btn-w-m btn-primary " %>
+            <%= f.submit '确定',class: "btn btn-w-m btn-primary",id:'smt' %>&nbsp;<%= link_to "返回",seller_products_path(@seller),class: "btn btn-w-m btn-primary " %>
           </div>
         </div>
     <% end %>

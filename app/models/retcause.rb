@@ -1,0 +1,2 @@
+class Retcause < ApplicationRecord
+end

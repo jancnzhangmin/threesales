@@ -1,0 +1,44 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Retoforders</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Selleruser</th>
+      <th>Userid</th>
+      <th>Usertab</th>
+      <th>Textout</th>
+      <th>Userip</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @retoforders.each do |retoforder| %>
+      <tr>
+        <td><%= retoforder.selleruser_id %></td>
+        <td><%= retoforder.rettype %></td>
+        <td><%= retoforder.ordertype %></td>
+        <td><%= retoforder.other %></td>
+        <td><%= retoforder.retreason %></td>
+        <td><%= retoforder.retcomment %></td>
+        <td><%= retoforder.retmoney %></td>
+        <td><%= retoforder.name %></td>
+        <td><%= retoforder.tel %></td>
+        <td><%= retoforder.region %></td>
+        <td><%= retoforder.address %></td>
+        <td><%= retoforder.logisticname %></td>
+        <td><%= retoforder.logisticnum %></td>
+        <td><%= retoforder.sellertext %></td>
+        <td><%= link_to 'Show', retoforder %></td>
+        <td><%= link_to 'Edit', edit_retoforder_path(retoforder) %></td>
+        <td><%= link_to 'Destroy', retoforder, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Retoforder', new_retoforder_path %>

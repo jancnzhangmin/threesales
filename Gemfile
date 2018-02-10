@@ -5,6 +5,8 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
+gem 'bcrypt', '~>3.1.7'
+gem 'uuidtools'
 gem 'rails_kindeditor'
 gem 'font-awesome-rails'
 gem "paperclip", "~> 5.0.0"

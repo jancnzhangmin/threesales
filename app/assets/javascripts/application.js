@@ -34,3 +34,4 @@
 //= require plugins/fancybox/jquery.fancybox.js
 //= require plugins/echarts/echarts-all.js
 //= require plugins/treeview/bootstrap-treeview.js
+//= require laydate/laydate.js

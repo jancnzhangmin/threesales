@@ -1,5 +1,11 @@
 Rails.application.routes.draw do
 
+  get 'retcauses/index'
+
+  resources :systemlogs
+  resources :retcauses
+  resources :comments
+  resources :articles
   get 'logisticbuycar/update'
   get 'logisticbuycar/destroy'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
@@ -17,9 +23,27 @@ Rails.application.routes.draw do
       collection do
         get 'editstatus'
       end
+      resources :retoforders do
+        member do
+          get 'setretok'
+          get 'setretno'
+          get 'setlogisticok'
+        end
+      end
+      member do
+        post 'setsellererr'
+      end
     end
     resources :notices
     resources :weixinmenus
+    resources :articles do
+      resources :comments do
+        member do
+          get  'publecomm'
+          get  'publedel'
+        end
+      end
+    end
   end
 
   resources :logistics
@@ -45,6 +69,7 @@ Rails.application.routes.draw do
 
   resources :apis do
     collection do
+      get 'getreceoitdefault'
       get 'getseller'
       get 'getproductlist'
       get 'getproductcontent'
@@ -71,6 +96,24 @@ Rails.application.routes.draw do
       get 'getthreename'
       get 'getsenondname'
       get 'getreferralname'
+      get 'getwxpublicqrcode'
+      get 'getwxpubliopenid'
+      get 'getsellerqrcode'
+      get 'getuserpswds'
+      get 'setuserpswds'
+      get 'getak'
+      get 'getwxgetrich'
+      get 'getarticles'
+      get 'getarticleopenid'
+      get 'getarticlecontent'
+      get 'setcomment'
+      get 'getsystemlog'
+      get 'getbuycaraftersales'
+      get 'setafterone'
+      get 'getlogistics'
+      get 'getafterlogistics'
+      get 'setlogistics'
+      get 'getretcauses'
     end
   end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171209081822) do
+ActiveRecord::Schema.define(version: 20180201031835) do
 
   create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "seller_id"
@@ -21,6 +21,17 @@ ActiveRecord::Schema.define(version: 20171209081822) do
     t.string   "auth"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
+  end
+
+  create_table "articles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "seller_id"
+    t.string   "title"
+    t.string   "writer"
+    t.datetime "pubiletime"
+    t.integer  "number"
+    t.text     "content",    limit: 65535
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
   end
 
   create_table "buycars", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -39,6 +50,21 @@ ActiveRecord::Schema.define(version: 20171209081822) do
     t.float    "third",         limit: 24
     t.string   "remarkuser"
     t.integer  "num"
+    t.integer  "bpnum"
+    t.integer  "minusbpnum"
+  end
+
+  create_table "comments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "article_id"
+    t.string   "openid"
+    t.string   "name"
+    t.string   "img"
+    t.text     "content",    limit: 65535
+    t.integer  "fabulous"
+    t.integer  "up_id"
+    t.datetime "pubiletime"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
   end
 
   create_table "logisticorders", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -81,6 +107,7 @@ ActiveRecord::Schema.define(version: 20171209081822) do
     t.string   "spec"
     t.string   "model"
     t.integer  "shopstatus"
+    t.integer  "bpnum"
   end
 
   create_table "productclas", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -112,6 +139,8 @@ ActiveRecord::Schema.define(version: 20171209081822) do
     t.string   "productimg_content_type"
     t.integer  "productimg_file_size"
     t.datetime "productimg_updated_at"
+    t.integer  "bpnum"
+    t.integer  "sbpnum"
   end
 
   create_table "receives", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -135,6 +164,33 @@ ActiveRecord::Schema.define(version: 20171209081822) do
     t.integer  "choice"
   end
 
+  create_table "retcauses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "num"
+    t.string   "label"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "retoforders", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "selleruser_id"
+    t.integer  "buycar_id"
+    t.integer  "rettype"
+    t.integer  "ordertype"
+    t.string   "other"
+    t.integer  "retreason"
+    t.text     "retcomment",    limit: 65535
+    t.float    "retmoney",      limit: 24
+    t.string   "name"
+    t.string   "tel"
+    t.string   "region"
+    t.string   "address"
+    t.string   "logisticname"
+    t.string   "logisticnum"
+    t.text     "sellertext",    limit: 65535
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+  end
+
   create_table "sellers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.text     "summary",                  limit: 65535
@@ -154,6 +210,10 @@ ActiveRecord::Schema.define(version: 20171209081822) do
     t.string   "appid"
     t.string   "secret"
     t.string   "weixinname"
+    t.string   "qrcode_file_name"
+    t.string   "qrcode_content_type"
+    t.integer  "qrcode_file_size"
+    t.datetime "qrcode_updated_at"
   end
 
   create_table "sellerusers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -170,11 +230,22 @@ ActiveRecord::Schema.define(version: 20171209081822) do
     t.integer  "repeatshop"
   end
 
+  create_table "systemlogs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "table"
+    t.integer  "userid"
+    t.string   "userip"
+    t.text     "textout",       limit: 65535
+    t.integer  "selleruser_id"
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+  end
+
   create_table "userpwds", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "user_id"
     t.string   "password_digest"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
+    t.string   "ak"
   end
 
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -191,6 +262,7 @@ ActiveRecord::Schema.define(version: 20171209081822) do
     t.float    "undthird",        limit: 24
     t.float    "undsenond",       limit: 24
     t.float    "undfirst",        limit: 24
+    t.integer  "bpnum"
   end
 
   create_table "weixinlogs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

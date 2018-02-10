@@ -1,0 +1,32 @@
+<%= render 'layerbegin' %>
+<div class="col-lg-12">
+  <div class="ibox float-e-margins">
+    <div class="ibox-title">
+      <h3>售后原因管理</h3>
+    </div>
+    <div class="ibox-content">
+      <table class="table table-hover table-bordered text-center">
+        <thead>
+        <tr>
+          <th class="text-center">顺序</th>
+          <th class="text-center">理由</th>
+          <th class="text-center">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @retcauses.each do |ret| %>
+            <tr>
+              <td><%= ret.num %></td>
+              <td><%= ret.label %></td>
+              <td><%= link_to '编辑',edit_retcause_path(ret) %>
+                <%= link_to '删除', ret, method: :delete, data: { confirm: '确认删除?' } %></td>
+            </tr>
+        <% end %>
+        </tbody>
+      </table>
+      <%= link_to "新增",new_retcause_path,class: "btn btn-w-m btn-primary pull-right" %>
+      <br>
+    </div>
+  </div>
+</div>
+<%=render 'layerend' %>

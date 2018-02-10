@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  seller_id: 1
+  title: MyString
+  writer: MyString
+  pubiletime: 2018-01-13 11:13:17
+  number: 1
+  content: MyText
+
+two:
+  seller_id: 1
+  title: MyString
+  writer: MyString
+  pubiletime: 2018-01-13 11:13:17
+  number: 1
+  content: MyText

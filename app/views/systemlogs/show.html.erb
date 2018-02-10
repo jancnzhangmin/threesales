@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Table:</strong>
+  <%= @systemlog.table %>
+</p>
+
+<p>
+  <strong>Userid:</strong>
+  <%= @systemlog.userid %>
+</p>
+
+<p>
+  <strong>Userip:</strong>
+  <%= @systemlog.userip %>
+</p>
+
+<p>
+  <strong>Textout:</strong>
+  <%= @systemlog.textout %>
+</p>
+
+<%= link_to 'Edit', edit_systemlog_path(@systemlog) %> |
+<%= link_to 'Back', systemlogs_path %>

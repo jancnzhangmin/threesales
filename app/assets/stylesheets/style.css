@@ -4107,8 +4107,47 @@ body.skin-3 {
 /*my custom*/
 a.mylink{color:#fff;text-decoration:none; }
 
+/*small*/
+.chat-discussion {
+    background: #eee;
+    padding: 15px;
+    /*height: 400px;*/
+    overflow-y: auto;
+}
+.message {
+    background-color: #fff;
+    border: 1px solid #e7eaec;
+    text-align: left;
+    display: block;
+    padding: 10px 20px;
+    position: relative;
+    border-radius: 4px;
+}
+.message-date {
+    font-size: 10px;
+    color: #888;
+}
+.message-content {
+    display: block;
+}
+.chat-messageright .message-author {
+    color: crimson;
+}
+.chat-messageleft .message-author {
+    color:#428bca
+}
 
-
-
+.chat-discussion .chat-messageleft .message {
+    text-align: left;
+}
+.chat-discussion .chat-messageright .message {
+    text-align: right;
+}
+.chat-messageright {
+    padding: 10px 20px;
+}
+.chat-messageleft {
+    padding: 10px 20px;
+}
 
 

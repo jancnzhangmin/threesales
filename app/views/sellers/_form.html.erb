@@ -47,6 +47,16 @@ $(document).ready(function(){
         }
     }
 
+    function readURLqrcode(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#qrcode1').attr('src', e.target.result);
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
 
 </script>
 <div class="ibox-content form-horizontal m-t" >
@@ -62,6 +72,13 @@ $(document).ready(function(){
           <label class="col-sm-3 control-label">商家简称：</label>
           <div class="col-sm-6">
             <%= f.text_field :shortname,class:"form-control",id:'shortname' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">二维码图片：</label>
+          <div class="col-sm-6 text-center">
+            <%= f.file_field :qrcode,class:"form-control",:onchange => "readURLqrcode(this)" %>
+            <img id="qrcode1" width="600px" src=<%= @seller.qrcode.url %>>
           </div>
         </div>
         <div class="form-group">

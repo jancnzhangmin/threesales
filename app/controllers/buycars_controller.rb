@@ -4,11 +4,23 @@ class BuycarsController < ApplicationController
 
   def index
     @seller = Seller.find(params[:seller_id])
-    @buycars = @seller.buycars
+    @buycars = @seller.buycars.order('created_at desc')
   end
 
   def edit
-
+    retoforder = Retoforder.where("buycar_id = ?",@buycar.id)
+    if retoforder.length > 0
+      @retoforder = retoforder[0]
+      @retcause = Retcause.where("num = ?",@retoforder.retreason)
+      if @retcause.length > 0
+        @retcause = @retcause[0]
+      else
+        @retcause = nil
+      end
+    end
+    @receives = Receive.where("buycar_id = ?",@buycar.id)
+    @receives = @receives[0]
+    @logisticorders = Logisticorder.where("buycar_id = ?",@buycar.id)
   end
 
   def editstatus
@@ -37,12 +49,27 @@ class BuycarsController < ApplicationController
   def destroy
     order=@buycar.orders
     order.each { |ord| ord.destroy }
-    thirdownid(3,@buycar.selleruser_id,@buycar.id)
+    if @buycar.status != nil
+      thirdownid(3,@buycar.selleruser_id,@buycar.id)
+    end
     @buycar.destroy
     respond_to do |format|
       format.html { redirect_to seller_buycars_path, notice: '删除成功' }
       format.json { head :no_content }
     end
+  end
+
+  def setsellererr
+    ddr = params.require(:retoforder).permit(:id,:sellertext)
+    retof = Retoforder.find(ddr['id'])
+    retof.sellertext = ddr['sellertext']
+    @buycar = Buycar.find(params[:id])
+    @seller = Seller.find(params[:seller_id])
+    retof.rettype = 33
+    @buycar.status = 30
+    @buycar.save
+    retof.save
+    redirect_to [:edit,@seller,@buycar]
   end
 
   private

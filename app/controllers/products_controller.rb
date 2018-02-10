@@ -14,19 +14,29 @@ class ProductsController < ApplicationController
   end
 
   def new
-    @product=Product.new
+    @product = Product.new
     @productclas = @seller.productclas
   end
 
   def create
     @products = @seller.products
     @products = @products.create(product_params)
+    if @products.bpnum == nil
+      @products.bpnum = 0
+      @product.sbpnum = 0
+      @products.save
+    end
     redirect_to seller_products_path
   end
 
   def update
     respond_to do |format|
       if @product.update(product_params)
+        if @product.bpnum == nil
+          @product.bpnum = 0
+          @product.sbpnum = 0
+          @product.save
+        end
         format.html { redirect_to seller_products_path, notice: 'Unit was successfully updated.' }
         format.json { render :show, status: :ok, location: @seller }
       else
@@ -56,6 +66,6 @@ class ProductsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def product_params
-    params.require(:product).permit(:productcla_id,:name,:spec,:model,:price,:content,:status,:secondprice,:seller_id,:productimg, :product_id, :first, :second, :third, :sfirst, :ssecond, :sthird)
+    params.require(:product).permit(:productcla_id,:name,:spec,:model,:price,:content,:status,:secondprice,:seller_id,:productimg, :product_id, :first, :second, :third, :sfirst, :ssecond, :sthird, :bpnum, :sbpnum)
   end
 end

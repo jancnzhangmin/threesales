@@ -11,7 +11,6 @@
 
 <div class="row">
 
-
   <a href=<%= seller_admins_path(@seller)%>>
     <div class="col-sm-3">
       <div class="widget style1 blue-bg">
@@ -62,7 +61,6 @@
     </div>
   </a>
 
-
   <a href=<%= seller_buycars_path(@seller) %> >
     <div class="col-sm-3">
       <div class="widget style1 red-bg">
@@ -79,6 +77,7 @@
     </div>
   </a>
 </div>
+
 <div class="row">
   <a href=<%=seller_notices_path(@seller) %> >
     <div class="col-sm-3">
@@ -105,8 +104,22 @@
           </div>
           <div class="col-xs-8 text-right">
             <span> 微信自定义菜单 </span>
-            <h2 class="font-bold"><%=@productclacount %></h2>
-
+            <h2 class="font-bold">0</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+  </a>
+  <a href=<%=seller_articles_path(@seller) %> >
+    <div class="col-sm-3">
+      <div class="widget style1 yellow-bg">
+        <div class="row">
+          <div class="col-xs-4">
+            <i class="fa fa-cubes fa-5x"></i>
+          </div>
+          <div class="col-xs-8 text-right">
+            <span> 文章管理 </span>
+            <h2 class="font-bold">0</h2>
           </div>
         </div>
       </div>

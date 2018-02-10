@@ -23,7 +23,13 @@
               <td><%= seller.shortname %></td>
               <td><%= seller.tel %></td>
               <td><%= seller.address %></td>
-              <td><%= seller.status %></td>
+              <td>
+                <% if seller.status == 1%>
+                    启用
+                <%else%>
+                    停用
+                <%end%>
+              </td>
               <td>
                 <%= link_to '查看',seller_path(seller) %>
                 <%= link_to '编辑',edit_seller_path(seller) %>
