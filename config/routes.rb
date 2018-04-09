@@ -1,5 +1,11 @@
 Rails.application.routes.draw do
 
+  get 'modelconts/index'
+
+  get 'sellermodels/index'
+
+  get 'stables/index'
+
   get 'retcauses/index'
 
   resources :systemlogs
@@ -44,11 +50,14 @@ Rails.application.routes.draw do
         end
       end
     end
+    resources :sellermodels do
+      resources :modelconts
+    end
   end
 
   resources :logistics
   resources :logisticorders
-
+  resources :stables
 
   resources :recepitaddres
 
@@ -114,6 +123,8 @@ Rails.application.routes.draw do
       get 'getafterlogistics'
       get 'setlogistics'
       get 'getretcauses'
+      get 'getwxposanopenid'
+      get 'getbuycardel'
     end
   end
 

@@ -1,7 +1,8 @@
 class ApisController < ApplicationController
+  $posanappid = 'wx5726c31c9832f709'
   require "rexml/document"
   include REXML
-  before_action :set_openid, only: [:getnotice, :getbuycarlist, :getproductlist, :getproname, :getproductcontent, :getrecepit, :getreceoitadd, :getrecepitone, :getreceoitedit, :getreceoitdel, :getreceoitdefault, :getbuycarfrom, :getbuycaradd, :setreceive, :getweixinimg, :getbuycarplay, :getbuycarconfirm, :getuserupname, :setuserupname, :getthreename, :getreferralname, :getsenondname, :getwxpublicqrcode, :getsellerqrcode, :getuserpswds, :setuserpswds, :getak, :getwxgetrich, :getsystemlog, :getbuycaraftersales, :setafterone, :getafterlogistics, :setlogistics]
+  before_action :set_openid, only: [:getbuycardel, :getnotice, :getbuycarlist, :getproductlist, :getproname, :getproductcontent, :getrecepit, :getreceoitadd, :getrecepitone, :getreceoitedit, :getreceoitdel, :getreceoitdefault, :getbuycarfrom, :getbuycaradd, :setreceive, :getweixinimg, :getbuycarplay, :getbuycarconfirm, :getuserupname, :setuserupname, :getthreename, :getreferralname, :getsenondname, :getwxpublicqrcode, :getsellerqrcode, :getuserpswds, :setuserpswds, :getak, :getwxgetrich, :getsystemlog, :getbuycaraftersales, :setafterone, :getafterlogistics, :setlogistics]
   skip_before_action :verify_authenticity_token, :only => [:weixingetpost]
 
   def set_openid
@@ -182,7 +183,7 @@ class ApisController < ApplicationController
     rec.tel = params[:tel]
     rec.region = params[:region]
     rec.address = params[:address]
-    rec.choice = 0;
+    rec.choice = 0
     rec.save
     render json: params[:callback]+'({"recepits":'+rec.id.to_s+'})',content_type: "application/javascript"  #权限管理
   end
@@ -224,9 +225,9 @@ class ApisController < ApplicationController
   end
   def getbuycarlist
     if params[:type]
-      buycar = Buycar.where('selleruser_id in (SELECT id FROM sellerusers where user_id = ?) and status = ?',@selleruser[0].user_id,params[:type]).order('created_at desc')
+      buycar = Buycar.where('selleruser_id in (SELECT id FROM sellerusers where user_id = ?) and status = ? and (deltype is null or deltype = 2)',@selleruser[0].user_id,params[:type]).order('created_at desc')
     else
-      buycar = Buycar.where('selleruser_id in (SELECT id FROM sellerusers where user_id = ?)',@selleruser[0].user_id).order('created_at desc')
+      buycar = Buycar.where('selleruser_id in (SELECT id FROM sellerusers where user_id = ?) and (deltype is null or deltype = 2)',@selleruser[0].user_id).order('created_at desc')
     end
     buycararr = Array.new
     buycar.each do |buy|
@@ -411,6 +412,7 @@ class ApisController < ApplicationController
       systemls.userip = request.remote_ip
       systemls.textout = "您于" + Time.new.strftime("%Y-%m-%d %H:%M:%S") + "下了一个订单。"
       systemls.save
+      modelout(selluser[0].seller_id,3,selluser[0].openid,buycar.id)
       render json: params[:callback]+'({"buycar":'+ buycar.id.to_s + '})',content_type: "application/javascript"
     end
   end
@@ -549,7 +551,12 @@ class ApisController < ApplicationController
             sellernew.seller_id=selname[0].id
           end
 
+          token = getaccesstoken(seller[0].seller_id)
+          img = gethtml('https://api.weixin.qq.com/cgi-bin/user/info?access_token=' + token + '&openid=' + sellernew.openid + '&lang=zh_CN')
+          img = JSON.parse(img)
+
           user=User.new
+          user.name=img['nickname']
           user.third=0
           user.senond=0
           user.first=0
@@ -559,12 +566,14 @@ class ApisController < ApplicationController
           user.save
           sellernew.user_id=user.id
           sellernew.save
-          selname=Seller.find(sellernew.seller_id)
-          token = getaccesstoken(sellernew.seller_id)
-          postcustomtext(token,sellernew.openid,"恭喜您，已成功关注“" + selname.name.to_s + '”')
-          if seller.length>0
-            token = getaccesstoken(seller[0].seller_id)
-            postcustomtext(token,seller[0].openid,"恭喜您，有一人通过扫描您的二维码关注了“"+selname.name.to_s+'”')
+          modelout(sellernew.seller_id,1,sellernew.openid,0)
+
+          #selname=Seller.find(sellernew.seller_id)
+          #token = getaccesstoken(sellernew.seller_id)
+          #postcustomtext(token,sellernew.openid,"恭喜您，已成功关注“" + selname.name.to_s + '”')
+          if seller.length > 0
+            modelout(seller[0].seller_id,2,seller[0].openid,user.id)
+            #postcustomtext(token,seller[0].openid,"恭喜您，有一人通过扫描您的二维码关注了“"+selname.name.to_s+'”')
           end
         else
           token = getaccesstoken(seller[0].seller_id)
@@ -628,6 +637,7 @@ class ApisController < ApplicationController
         systemls.userip = request.remote_ip
         systemls.textout = "您于" + Time.new.strftime("%Y-%m-%d %H:%M:%S") + "支付了一个订单的款项，共计支付了¥" + buycar.amount.to_s + "。"
         systemls.save
+        modelout(seller.seller_id,4,seller.openid,buycar.id)
         render json: params[:callback]+'({"buycar":"'++buycar.id.to_s++'"})',content_type: "application/javascript"
       else
         render json: '({"err":404})',content_type: "application/javascript"
@@ -708,7 +718,16 @@ class ApisController < ApplicationController
   def getwxopenid
     seller = Seller.find(params[:state])
     openid = getopenid(seller.appid,seller.secret,params[:code])
-    redirect_to "http://threefront.posan.biz?openid=" + openid.to_s + "&sid=" + seller.id.to_s
+    selleruser = Selleruser.where('seller_id = ? and openid = ?' ,seller.id ,openid)
+    if selleruser.length > 0
+      if selleruser[0].openidposan.to_s == ''
+        redirect_to 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + $posanappid.to_s + '&redirect_uri=http%3a%2f%2fcoffeeadmin.posan.biz%2fapis%2fthreeopenid&response_type=code&scope=snsapi_base&state=' + selleruser[0].id + '#wechat_redirect'
+      else
+        redirect_to "http://threefront.posan.biz?openid=" + openid.to_s + "&sid=" + seller.id.to_s
+      end
+    else  #要不要跳转微信公众号
+      redirect_to "http://threefront.posan.biz?openid=" + openid.to_s + "&sid=" + seller.id.to_s
+    end
   end
 
   class Userupcla
@@ -808,7 +827,13 @@ class ApisController < ApplicationController
         sellernew.up_id = selleruser[0].id
         sellernew.seller_id = seller.id
 
+        token = getaccesstoken(selleruser[0].seller_id)
+
+        img = gethtml('https://api.weixin.qq.com/cgi-bin/user/info?access_token=' + token + '&openid=' + openid + '&lang=zh_CN')
+        img = JSON.parse(img)
+
         user=User.new
+        user.name=img['nickname']
         user.third=0
         user.senond=0
         user.first=0
@@ -818,14 +843,24 @@ class ApisController < ApplicationController
         user.save
         sellernew.user_id=user.id
         sellernew.save
-        token = getaccesstoken(selleruser[0].seller_id)
-        postcustomtext(token,selleruser[0].openid,"恭喜您，有一人通过扫描您的二维码关注了“" + seller.name.to_s + '”')
-        redirect_to "http://threefront.posan.biz/v-0.9.0-zh_CN-/threesales/main.w?openid=" + openid.to_s + "&sid=" + selleruser[0].seller_id.to_s #发布模式
+
+        modelout(selleruser[0].seller_id,2,selleruser[0].openid,user.id)
+
+        #postcustomtext(token,selleruser[0].openid,"恭喜您，有一人通过扫描您的二维码关注了“" + seller.name.to_s + '”')
+        #redirect_to "http://threefront.posan.biz/v-0.9.0-zh_CN-/threesales/main.w?openid=" + openid.to_s + "&sid=" + selleruser[0].seller_id.to_s #发布模式
+        redirect_to 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + @posanappid + '&redirect_uri=http%3a%2f%2fcoffeeadmin.posan.biz%2fapis%2fthreeopenid&response_type=code&scope=snsapi_base&state=' + selleruser[0].id.to_s + '#wechat_redirect'
         #redirect_to "http://192.168.0.200:8080/x5/UI2/v_/threesales/main.w?openid=" + openid.to_s  #测试模式
       end
     else
       render json: params[:callback]+'({"err":"404"})',content_type: "application/javascript"
     end
+  end
+
+  def getwxposanopenid
+    selleruser = Selleruser.find(params[:state])
+    selleruser.openidposan = params[:openid]
+    selleruser.save
+    redirect_to "http://threefront.posan.biz/v-0.9.0-zh_CN-/threesales/index.w?openid=" + selleruser.openid.to_s + "&sid=" + selleruser.seller_id.to_s #发布模式
   end
 
   def getsellerqrcode
@@ -1013,5 +1048,17 @@ class ApisController < ApplicationController
   def getretcauses
     ret = Retcause.all.order('num asc')
     render json: params[:callback]+'({"retcause":' + ret.to_json + '})',content_type: "application/javascript"
+  end
+  def getbuycardel
+    @selleruser = @selleruser[0]
+    buycar = Buycar.where("selleruser_id = ? and id = ?",@selleruser.id,params[:id])
+    buycar = buycar[0]
+    if buycar.deltype == 2
+      buycar.deltype = 6
+    else
+      buycar.deltype = 4
+    end
+    buycar.save
+    render json: params[:callback]+'({"err":"正确"})',content_type: "application/javascript"
   end
 end

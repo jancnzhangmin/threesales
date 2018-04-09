@@ -4,7 +4,7 @@ class BuycarsController < ApplicationController
 
   def index
     @seller = Seller.find(params[:seller_id])
-    @buycars = @seller.buycars.order('created_at desc')
+    @buycars = @seller.buycars.where("deltype is null or deltype = 4").order('created_at desc')
   end
 
   def edit
@@ -47,12 +47,18 @@ class BuycarsController < ApplicationController
   end
 
   def destroy
-    order=@buycar.orders
-    order.each { |ord| ord.destroy }
+    #order=@buycar.orders
+    #order.each { |ord| ord.destroy }
     if @buycar.status != nil
       thirdownid(3,@buycar.selleruser_id,@buycar.id)
     end
-    @buycar.destroy
+    #@buycar.destroy
+    if @buycar.deltype == 4
+      @buycar.deltype = 6
+    else
+      @buycar.deltype = 2
+    end
+    @buycar.save
     respond_to do |format|
       format.html { redirect_to seller_buycars_path, notice: '删除成功' }
       format.json { head :no_content }

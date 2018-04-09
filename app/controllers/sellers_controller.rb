@@ -28,6 +28,7 @@ class SellersController < ApplicationController
   end
 
   def update
+    debugger
     respond_to do |format|
       if @seller.update(seller_params)
         format.html { redirect_to sellers_path, notice: 'Unit was successfully updated.' }

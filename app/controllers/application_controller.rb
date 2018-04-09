@@ -124,4 +124,32 @@ class ApplicationController < ActionController::Base
       return 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + sid.appid + '&redirect_uri=http%3a%2f%2fthreeadmin.posan.biz%2fapis%2fgetwxopenid&response_type=code&scope=snsapi_base&state=' + sid.id.to_s + '#wechat_redirect'
     end
   end
+  def modelout(sellerid,stype,openid,mid)
+    sell = Seller.find(sellerid)
+    token = getaccesstoken(sell.id)
+    case stype
+      when 1 #关注通知
+        postcustomtext(token,openid,"恭喜您，已成功关注“" + sell.name.to_s + '”')
+      when 2..10 #关注后上级通知
+        models = sell.sellermodels.where('stype = ?',stype)
+        models.each do |model|
+          str = '{"touser":"' + openid + '","template_id":"' + model.modeid + '", "data":{ '
+          conts = model.modelconts
+          table = ActiveRecord::Base.connection.select_all "select * from " + model.tablename + " where id = " + mid.to_s
+          table = table[0]
+          conts.each do |cont|
+            str = str + '"' + cont.wxname + '":{"value":"'
+            if cont.stype == 1
+              str = str + cont.content + '"},'
+            else
+              str = str + table[cont.tbname].to_s + '"},'
+            end
+          end
+          str = str[0..(str.length - 2)] + '}}'
+          posthtml('https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=' + token,str)
+        end
+      else
+        puts "adult"
+    end
+  end
 end

@@ -14,6 +14,7 @@
           <th class="text-center">作者</th>
           <th class="text-center">发布时间</th>
           <th class="text-center">点击次数</th>
+          <th class="text-center">文章地址</th>
           <th colspan="3" class="text-center">操作</th>
         </tr>
         </thead>
@@ -26,6 +27,7 @@
               <td><%= article.writer %></td>
               <td><%= article.pubiletime.strftime('%Y-%m-%d %H:%M') %></td>
               <td><%= article.number %></td>
+              <td>http://threeadmin.posan.biz/apis/getarticleopenid?id=<%= article.id %></td>
               <td><%= link_to '查看', [@seller,article] %></td>
               <td><%= link_to '编辑', edit_seller_article_path(@seller , article) %></td>
               <td><%= link_to '删除', [@seller,article], method: :delete, data: { confirm: '是否删除?' } %></td>

@@ -1,0 +1,107 @@
+<script>
+    $(document).ready(function(){
+        $("#claselect").val($("#clainput").val());
+        $("#claselect").change(function(){
+            $("#clainput").val($("#claselect").val());
+        });
+        $('#smt').click(function(){
+            if($('#clainput').val()==''){
+                toastr.error('请选择表名');
+                return false;
+            }
+        });
+    });
+</script>
+<div class="ibox-content form-horizontal m-t">
+  <div class="form-group">
+    <%= form_for([@seller,@sellermodel],:html => {:class=>'form-horizontal m-t',:multipart => true}) do |f| %>
+        <% if @sellermodel.errors.any? %>
+            <div id="error_explanation">
+              <h2><%= pluralize(@sellermodel.errors.count, "error") %> prohibited this retoforder from being saved:</h2>
+
+              <ul>
+                <% @sellermodel.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+        <% end %>
+        <%= f.hidden_field :seller_id %>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">表名：</label>
+          <div class="col-sm-5">
+            <%= f.hidden_field :tablename,class:"form-control",id:'clainput' %>
+            <select class="form-control m-b" name="account" id="claselect">
+              <%= @stable.each do |sta|%>
+                  <option value=<%=sta.name%>><%= sta.lable %></option>
+              <% end %>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">状态：</label>
+          <div class="col-sm-5">
+            <%= f.number_field :stype,class:"form-control" %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">模板ID：</label>
+          <div class="col-sm-5">
+            <%= f.text_field :modeid,class:"form-control" %>
+          </div>
+        </div>
+        <div class="ibox-content">
+          <table class="table table-hover table-bordered text-center">
+            <thead>
+            <tr>
+              <th class="text-center">字段名</th>
+              <th class="text-center">微信字段</th>
+              <th class="text-center">内容</th>
+              <th class="text-center">状态</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% @sellermodel.modelconts.each do |cont| %>
+                <%= f.fields_for cont, index: cont.id do |cont_form|%>
+                    <tr>
+                      <td><%= cont_form.text_field :tbname , style:'width: 100%;'%></td>
+                      <td><%= cont_form.text_field :wxname , style:'width: 100%;' , readonly:'true'%></td>
+                      <td><%= cont_form.text_field :content , style:'width: 100%;'%></td>
+                      <td><%= cont_form.number_field :stype , style:'width: 100%;'%></td>
+                    </tr>
+                <% end %>
+            <% end %>
+            </tbody>
+          </table>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label"></label>
+          <div class="col-sm-5 text-right">
+            <%= f.submit '确定',class: "btn btn-w-m btn-primary",id:'smt'%>&nbsp;<%= link_to "返回",seller_sellermodels_path(@seller),class: "btn btn-w-m btn-primary " %>
+          </div>
+        </div>
+    <% end %>
+    <div class="ibox-content">
+      <table class="table table-hover table-bordered text-center">
+        <thead>
+        <tr>
+          <th class="text-center">模版ID</th>
+          <th class="text-center">标题</th>
+          <th class="text-center">模板内容</th>
+          <th class="text-center">模板实例</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @wxjson.each do |wxj| %>
+            <tr>
+              <td><%= wxj['template_id'] %></td>
+              <td><%= wxj['title'] %></td>
+              <td><%= wxj['content'] %></td>
+              <td><%= wxj['example'] %></td>
+            </tr>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

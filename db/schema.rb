@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180201031835) do
+ActiveRecord::Schema.define(version: 20180408085138) do
 
   create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "seller_id"
@@ -52,6 +52,7 @@ ActiveRecord::Schema.define(version: 20180201031835) do
     t.integer  "num"
     t.integer  "bpnum"
     t.integer  "minusbpnum"
+    t.integer  "deltype"
   end
 
   create_table "comments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -79,6 +80,16 @@ ActiveRecord::Schema.define(version: 20180201031835) do
     t.string   "logistic"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "modelconts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "tbname"
+    t.string   "wxname"
+    t.string   "content"
+    t.integer  "stype"
+    t.integer  "sellermodel_id"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
   end
 
   create_table "notices", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -191,6 +202,16 @@ ActiveRecord::Schema.define(version: 20180201031835) do
     t.datetime "updated_at",                  null: false
   end
 
+  create_table "sellermodels", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "tablename"
+    t.integer  "stype"
+    t.integer  "seller_id"
+    t.string   "modeid"
+    t.integer  "wxtype"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "sellers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.text     "summary",                  limit: 65535
@@ -228,6 +249,15 @@ ActiveRecord::Schema.define(version: 20180201031835) do
     t.datetime "qrcode_cardate"
     t.string   "qrcode"
     t.integer  "repeatshop"
+    t.string   "openidposan"
+  end
+
+  create_table "stables", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name"
+    t.string   "lable"
+    t.integer  "stype"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "systemlogs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

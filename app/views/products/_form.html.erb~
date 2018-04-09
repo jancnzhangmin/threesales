@@ -86,7 +86,7 @@ function readURL(input) {
           <div class="col-sm-6">
             <%= f.hidden_field :productcla_id,class:"form-control",id:'productcla_id' %>
             <select class="form-control m-b" name="account" id="proclaselect">
-              <% @productclas.each do |clas|%>
+              <%= @productclas.each do |clas|%>
               <option value=<%=clas.id%>><%= clas.cla %></option>
               <% end %>
             </select>
