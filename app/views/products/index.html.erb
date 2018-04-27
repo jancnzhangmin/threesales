@@ -40,6 +40,28 @@
 
       </div>
       <br>
+      <div id="nav">
+        <input type="hidden" name="page" value=<%= @pagenum%>>
+        <nav style="text-align: center">
+          <ul class="pagination">
+            <% if (params[:page].to_i == 1) || (params[:page] == nil)%>
+                <li class="disabled"><a>首页</a></li>
+                <li class="disabled"><a>上一页</a></li>
+            <% else %>
+                <li><a href=<%= seller_products_path(@seller)  + '?page=1'%> >首页</a></li>
+                <li><a href=<%= seller_products_path(@seller)  + '?page='+(params[:page].to_i - 1).to_s %>>上一页</a></li>
+            <% end %>
+            <li class="disabled"><a>当前为第<%= params[:page] ? params[:page] : 1 %>页 共<%= @pagenum %>页</a></li>
+            <% if (params[:page].to_i >= @pagenum) || ((params[:page] == nil) && (@pagenum == 1))%>
+                <li class="disabled"><a>下一页</a></li>
+                <li class="disabled"><a>末页</a></li>
+            <% else %>
+                <li><a href=<%=  seller_products_path(@seller)  + '?page=' + ((params[:page] ? params[:page].to_i : 1) + 1).to_s%> >下一页</a></li>
+                <li><a href=<%=  seller_products_path(@seller) + '?page=' + @pagenum.to_s %>>末页</a></li>
+            <% end %>
+          </ul>
+        </nav>
+      </div>
     </div>
   </div>
 </div>

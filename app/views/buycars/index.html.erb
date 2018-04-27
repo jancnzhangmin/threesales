@@ -59,12 +59,15 @@ $(document).ready(function(){
                     未付款
                 <% end %>
                 <% if f.status == 1%>
-                    待发货
+                    待确认付款
                 <% end %>
                 <% if f.status == 2%>
-                    待收货
+                    待发货
                 <% end %>
                 <% if f.status == 3%>
+                    待收货
+                <% end %>
+                <% if f.status == 4%>
                     交易完成
                 <% end %>
                 <% if f.status == 11%>
@@ -83,7 +86,7 @@ $(document).ready(function(){
               <% if (f.status == 0) || (f.status == nil) %>
                 <%= link_to '删除', [@seller,f], method: :delete, data: { confirm: '确认删除?' } %>
               <% end %>
-              <% if f.status == 1%>
+              <% if f.status == 2%>
                 <a class="btnclick" type=<%= f.id%>>发货</a>
               <% end %>
                 <%= link_to '查看', edit_seller_buycar_path(@seller,f) %>
@@ -94,6 +97,28 @@ $(document).ready(function(){
       </table>
       <%= link_to "返回",seller_path(@seller),class: "btn btn-w-m btn-info " %>
       <br>
+      <div id="nav">
+        <input type="hidden" name="page" value=<%= @pagenum%>>
+        <nav style="text-align: center">
+          <ul class="pagination">
+            <% if (params[:page].to_i == 1) || (params[:page] == nil)%>
+                <li class="disabled"><a>首页</a></li>
+                <li class="disabled"><a>上一页</a></li>
+            <% else %>
+                <li><a href=<%= seller_buycars_path(@seller)  + '?page=1'%> >首页</a></li>
+                <li><a href=<%= seller_buycars_path(@seller)  + '?page='+(params[:page].to_i - 1).to_s %>>上一页</a></li>
+            <% end %>
+            <li class="disabled"><a>当前为第<%= params[:page] ? params[:page] : 1 %>页 共<%= @pagenum %>页</a></li>
+            <% if (params[:page].to_i == @pagenum) || ((params[:page] == nil) && (@pagenum == 1))%>
+                <li class="disabled"><a>下一页</a></li>
+                <li class="disabled"><a>末页</a></li>
+            <% else %>
+                <li><a href=<%=  seller_buycars_path(@seller)  + '?page=' + ((params[:page] ? params[:page].to_i : 1) + 1).to_s %> >下一页</a></li>
+                <li><a href=<%=  seller_buycars_path(@seller) + '?page=' + @pagenum.to_s %>>末页</a></li>
+            <% end %>
+          </ul>
+        </nav>
+      </div>
     </div>
   </div>
 </div>

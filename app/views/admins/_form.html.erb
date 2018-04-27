@@ -87,10 +87,27 @@ $(document).ready(function(){
             <%= f.text_field :auth,class:"form-control" %>
           </div>
         </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">入侵次数：</label>
+          <div class="col-sm-6">
+            <%= f.text_field :nids,class:"form-control" %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">密码错误次数：</label>
+          <div class="col-sm-6">
+            <%= f.text_field :errpwd,class:"form-control" %>
+          </div>
+        </div>
          <div class="form-group">
           <label class="col-sm-3 control-label"></label>
           <div class="col-sm-6 text-right">
-            <%= f.submit '确定',class: "btn btn-w-m btn-primary",id:'smt' %>&nbsp;<%= link_to "返回",seller_admins_path(@seller),class: "btn btn-w-m btn-primary " %>
+            <%= f.submit '确定',class: "btn btn-w-m btn-primary",id:'smt' %>&nbsp;
+            <%if @seller != nil%>
+                <%= link_to "返回",seller_admins_path(@seller),class: "btn btn-w-m btn-primary " %>
+            <%else%>
+                <%= link_to "返回",admins_path,class: "btn btn-w-m btn-primary " %>
+            <%end%>
           </div>
         </div>
     <% end %>

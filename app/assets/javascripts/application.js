@@ -22,8 +22,8 @@
 //= require plugins/pace/pace.min.js
 //= require plugins/validate/jquery.validate.min.js
 //= require plugins/validate/messages_zh.min.js
-//= require plugins/metisMenu/jquery.metisMenu.js
-//= require plugins/slimscroll/jquery.slimscroll.min.js
+// require plugins/metisMenu/jquery.metisMenu.js
+// require plugins/slimscroll/jquery.slimscroll.min.js
 //= require plugins/datapicker/bootstrap-datepicker.js
 //= require plugins/iCheck/icheck.min.js
 //= require plugins/layer/layer.js

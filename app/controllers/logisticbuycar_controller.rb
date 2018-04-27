@@ -1,4 +1,5 @@
 class LogisticbuycarController < ApplicationController
+  #before_action :authenticate_role
   before_action :set_seller, only: [:index, :edit, :new]
   before_action :set_buycar, only: [:index, :edit, :new, :create]
   before_action :set_logisticorder, only: [:edit, :destroy]

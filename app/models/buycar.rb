@@ -3,5 +3,6 @@ class Buycar < ApplicationRecord
   has_many :orders
 
   has_many :logisticorders
+  has_many :buycarsigns
 
 end

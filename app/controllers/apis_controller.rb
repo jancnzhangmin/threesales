@@ -1,20 +1,21 @@
 class ApisController < ApplicationController
+  $postthwxpay = 'http://coffeeadmin.posan.biz/wxpayments/cdzycrlz?callback=Wzx0xjG5'
   $posanappid = 'wx5726c31c9832f709'
   require "rexml/document"
   include REXML
-  before_action :set_openid, only: [:getbuycardel, :getnotice, :getbuycarlist, :getproductlist, :getproname, :getproductcontent, :getrecepit, :getreceoitadd, :getrecepitone, :getreceoitedit, :getreceoitdel, :getreceoitdefault, :getbuycarfrom, :getbuycaradd, :setreceive, :getweixinimg, :getbuycarplay, :getbuycarconfirm, :getuserupname, :setuserupname, :getthreename, :getreferralname, :getsenondname, :getwxpublicqrcode, :getsellerqrcode, :getuserpswds, :setuserpswds, :getak, :getwxgetrich, :getsystemlog, :getbuycaraftersales, :setafterone, :getafterlogistics, :setlogistics]
-  skip_before_action :verify_authenticity_token, :only => [:weixingetpost]
+  before_action :set_openid, only: [:getbuycardel, :getnotice, :getbuycarlist, :getproductlist, :getbuycartruemoney, :getproname, :getproductcontent, :getrecepit, :getreceoitadd, :getrecepitone, :getreceoitedit, :getreceoitdel, :getreceoitdefault, :getbuycarfrom, :getbuycaradd, :setreceive, :getweixinimg, :getbuycarplay, :getbuycarconfirm, :getuserupname, :setuserupname, :getthreename, :getreferralname, :getsenondname, :getwxpublicqrcode, :getsellerqrcode, :getuserpswds, :setuserpswds, :getak, :getwxgetrich, :getsystemlog, :getbuycaraftersales, :setafterone, :getafterlogistics, :setlogistics]
+  skip_before_action :verify_authenticity_token, :only => [:weixingetpost, :prepaytrue]
 
   def set_openid
-    if params[:openid] && params[:sid]
+    if (params[:openid] != "") && (params[:sid] != "")
       @selleruser = Selleruser.where(" openid = ? and seller_id = ?",params[:openid],params[:sid])
       if @selleruser.length > 0
 
       else
-        render json: params[:callback]+'({"err":"错误"})',content_type: "application/javascript"
+        render json: '({"err":"错误"})',content_type: "application/javascript"
       end
     else
-      render json: params[:callback]+'({"err":"错误"})',content_type: "application/javascript"
+      render json: '({"err":"错误"})',content_type: "application/javascript"
     end
   end
 
@@ -24,7 +25,7 @@ class ApisController < ApplicationController
   end
 
   def getnotice
-    if params[:openid] && params[:sid]
+    if (params[:openid] != "") && (params[:sid] != "")
       notice = Notice.where('seller_id = ? and status = 1',@selleruser[0].seller_id).order('updated_at desc').limit(5)
       noticeall = Array.new
       notice.each do |pro|
@@ -45,7 +46,7 @@ class ApisController < ApplicationController
   end
 
   def getproductlist
-    if params[:openid]
+    if params[:openid] != ""
       productls=Product.where('seller_id = ? and status = 1',@selleruser[0].seller_id).limit((params[:num].to_i * 5).to_s + ",5")#paginate(:page => params[:num], :per_page => 5).order("id desc")
       productarr = Array.new
       productls.each do |pro|
@@ -263,11 +264,19 @@ class ApisController < ApplicationController
     attr :bpoff,true
     attr :minusbpnum,true
     attr :status,true
+    attr :dedmoney,true
   end
   def getbuycarfrom
     buycar = Buycar.where("selleruser_id in (SELECT id FROM sellerusers where user_id = ?) and id = ?",@selleruser[0].user_id,params[:id])
     if buycar.length > 0
       buycar = buycar[0]
+      if (buycar.minusbpnum.to_i != 0) || (buycar.dedmoney.to_f != 0)
+        buycar.amount = buycar.dedmoney.to_f + buycar.amount.to_f + (buycar.minusbpnum.to_f / 100)
+        buycar.amount = sprintf("%.2f", buycar.amount)
+        buycar.dedmoney = 0
+        buycar.minusbpnum = 0
+        buycar.save
+      end
       order=Order.where("buycar_id = ?",buycar.id)
       receive=Receive.where("buycar_id = ?",buycar.id)
       orderarr = Array.new
@@ -301,9 +310,172 @@ class ApisController < ApplicationController
       user = User.find(@selleruser[0].user_id)
       buycla.bpoff = user.bpnum.to_i
       buycla.minusbpnum = buycar.minusbpnum.to_i
-      render json: params[:callback]+'({"buycar":'+buycla.to_json+',"order":'+orderarr.to_json+',"receive":'+receive.to_json+',"logisticorder":'+logarr.to_json+'})',content_type: "application/javascript"
+      buycla.dedmoney = sprintf("%.2f",user.first.to_f)
+      if buycar.status == 0
+        body = {"url" => params[:url].split('#')[0]}
+        body = posthtml('http://coffeeadmin.posan.biz/apis/getconfig',body)
+      else
+        body = '"err"'
+      end
+      render json: params[:callback]+'({"buycar":'+buycla.to_json+',"order":'+orderarr.to_json+',"receive":'+receive.to_json+',"logisticorder":'+logarr.to_json+',"wxconfig":'+body.to_s+'})',content_type: "application/javascript"
     else
       render json: '({"err":"404"})',content_type: "application/javascript"
+    end
+  end
+
+  def prepaytrue
+    result=request.body.read.to_s
+    wx = Weixinlog.new
+    wx.log = result
+    wx.save
+    body = posthtml('http://coffeeadmin.posan.biz/apis/notify',{"body" => result})
+    body = Hash.from_xml(body)
+    body = body["xml"]
+    result = Hash.from_xml(result)
+    result = result["xml"]
+    if body["return_code"] == "SUCCESS"
+      buycar = Buycar.where('ordernumber = ?',result["out_trade_no"])
+      if buycar.length > 0
+        buycar = buycar[0]
+        if (result["fee_type"] == "CNY") && ((buycar.amount*100).to_i == result["total_fee"].to_i)
+          buycar.status = 2
+          buycar.save
+          seller = Selleruser.find(buycar.selleruser_id)
+          if seller.up_id
+            thirupid(3,seller.up_id,buycar.id)
+          end
+          systemls = seller.systemlogs.new
+          systemls.table = "buycar"
+          systemls.userid = buycar.id
+          systemls.userip = request.remote_ip
+          systemls.textout = "您于" + Time.new.strftime("%Y-%m-%d %H:%M:%S") + "支付了一个订单的款项，共计支付了¥" + buycar.amount.to_s + "。"
+          systemls.save
+          modelout(seller.seller_id,4,seller.openid,buycar.id)
+        end
+      end
+    end
+    render :xml => {return_code: "SUCCESS"}.to_xml(root: 'xml', dasherize: false)
+  end
+
+  def getbuycarplay
+    buycar=Buycar.where("id = ?",params[:id])
+    if (buycar.length > 0) && (buycar[0].selleruser_id == @selleruser[0].id)
+      buycar=buycar[0]
+      if (buycar.minusbpnum.to_i != 0) || (buycar.dedmoney.to_f != 0)
+        buycar.amount = buycar.dedmoney.to_f + buycar.amount.to_f + (buycar.minusbpnum.to_f / 100)
+        buycar.amount = sprintf("%.2f", buycar.amount)
+        buycar.dedmoney = 0
+        buycar.minusbpnum = 0
+      end
+      user = User.find(@selleruser[0].user_id)
+      bpnum = 0.00
+      dedmoney = 0.00
+      if params[:bpnum].to_s == "1" #只使用积分
+        if user.bpnum > 0
+          bpnum = (user.bpnum.to_i)/100.00
+          money = buycar.amount.to_f
+          if money >= bpnum
+            money = money - bpnum
+            buycar.minusbpnum = user.bpnum
+            user.bpnum = 0
+            buycar.amount = sprintf("%.2f",money)
+          else
+            user.bpnum = sprintf("%.0f",((bpnum - money)*100))
+            buycar.amount = 0
+            buycar.minusbpnum = sprintf("%.0f",( money*100)).to_i
+          end
+        end
+      end
+      if params[:bpnum].to_s == "2" #只使用余额
+        if user.first > 0
+          dedmoney = user.first
+          money = buycar.amount.to_f
+          if money >= dedmoney
+            money = money - dedmoney
+            user.first = 0
+            buycar.amount = sprintf("%.2f",money)
+            buycar.dedmoney = dedmoney
+          else
+            user.first = sprintf("%.2f",(dedmoney - money))
+            buycar.amount = 0
+            buycar.dedmoney = money
+          end
+        end
+      end
+      if params[:bpnum].to_s == "3" #两种都使用的
+        if user.bpnum > 0
+          bpnum = (user.bpnum.to_i)/100.00
+          money = buycar.amount.to_f
+          if money >= bpnum
+            money = money - bpnum
+            buycar.minusbpnum = user.bpnum
+            user.bpnum = 0
+            buycar.amount = sprintf("%.2f",money)
+          else
+            user.bpnum = sprintf("%.0f",((bpnum - money)*100))
+            buycar.amount = 0
+            buycar.minusbpnum = sprintf("%.0f",( money*100)).to_i
+          end
+        end
+        if user.first > 0
+          dedmoney = user.first
+          money = buycar.amount.to_f
+          if money >= dedmoney
+            money = money - dedmoney
+            user.first = 0
+            buycar.amount = sprintf("%.2f",money)
+            buycar.dedmoney = dedmoney
+          else
+            user.first = sprintf("%.2f",(dedmoney - money))
+            buycar.amount = 0
+            buycar.dedmoney = money
+          end
+        end
+      end
+      buycar.remark = params[:name]
+      buycar.save
+      if buycar.amount > 0
+        seller = Seller.find(@selleruser[0].seller_id)
+        body = {"ordernumber" => buycar.ordernumber, "name" => seller.name, "openid" => @selleruser[0].openidposan, "amount" => buycar.amount}
+        body = posthtml('http://coffeeadmin.posan.biz/apis/getprepay',body)
+      else
+        body = '{"pay_ticket_param":{"err":"404"}}'
+      end
+      render json: params[:callback]+'({"buycar":"'+buycar.id.to_s+'","pay":'+body+'})',content_type: "application/javascript"
+    else
+      render json: '({"err":404})',content_type: "application/javascript"
+    end
+  end
+
+  def getbuycartruemoney
+    userak = Userpwd.find(@selleruser[0].user_id)
+    if userak.ak == params[:ak]
+      buycar = Buycar.where("id = ?",params[:id])
+      if (buycar.length > 0) && (buycar[0].status == 0) && (buycar[0].selleruser_id == @selleruser[0].id)
+        buycar=buycar[0]
+        if buycar.amount > 0
+          render json: params[:callback]+'({"err":"404"})',content_type: "application/javascript"
+        else
+          buycar.status=2
+          buycar.save
+          seller = @selleruser[0]
+          if seller.up_id
+            thirupid(3,seller.up_id,buycar.id)
+          end
+          systemls = seller.systemlogs.new
+          systemls.table = "buycar"
+          systemls.userid = buycar.id
+          systemls.userip = request.remote_ip
+          systemls.textout = "您于" + Time.new.strftime("%Y-%m-%d %H:%M:%S") + "支付了一个订单的款项，共计支付了¥" + buycar.amount.to_s + "。"
+          systemls.save
+          modelout(seller.seller_id,4,seller.openid,buycar.id)
+          render json: params[:callback]+'({"err":"ok"})',content_type: "application/javascript"
+        end
+      else
+        render json: params[:callback]+'({"err":404})',content_type: "application/javascript"
+      end
+    else
+      render json: params[:callback]+'({"err":404})',content_type: "application/javascript"
     end
   end
 
@@ -385,9 +557,8 @@ class ApisController < ApplicationController
       buycar.amount=zongjia
       buycar.status=0
       buycar.save
-      if selluser[0].up_id
-        thirupid(3,selluser[0].up_id,buycar.id)
-      end
+      buycar.ordernumber = Time.now.strftime('%Y%m%d%H%M%S') + buycar.id.to_s
+      buycar.save
       receive=Receive.new
       addr=Recepitaddre.where("user_id = ?",selluser[0].user_id)
       if addr.length > 0
@@ -432,6 +603,7 @@ class ApisController < ApplicationController
         user.undfirst = user.undfirst.to_f + buycar.first.to_f
         user.undfirst = sprintf("%.2f",user.undfirst)
       end
+      modelout(selluser.seller_id,5,selluser.openid,buycar.id)
       num = num - 1
       user.save
       if num > 1
@@ -497,7 +669,7 @@ class ApisController < ApplicationController
 
   def setlogistics
     retof = Retoforder.find(params[:id])
-    if ( params[:order].to_i > 0 ) && (params[:num])
+    if ( params[:order].to_i > 0 ) && (params[:num] != "")
       log = Logistic.find(params[:order])
       retof.logisticname = log.logistic
       retof.logisticnum = params[:num]
@@ -602,54 +774,9 @@ class ApisController < ApplicationController
     end
   end
 
-  def getbuycarplay
-    buycar=Buycar.where("id = ?",params[:id])
-    if (buycar.length > 0) && (buycar[0].status == 0)
-      buycar=buycar[0]
-      seller = @selleruser[0]
-      bpnum = 0.00;
-      user = User.find(seller.user_id)
-      if params[:bpnum] == '1'
-        if user.bpnum > 0
-          bpnum = (user.bpnum.to_i)/100.00
-        end
-      end
-      money = buycar.amount.to_f
-      if money >= bpnum
-        money = money - bpnum
-        bpnum = (bpnum * 100).to_i
-        user.bpnum = 0
-      else
-        money = 0
-        user.bpnum = sprintf("%.0f",((bpnum - money)*100))
-        bpnum = sprintf("%.0f",((bpnum - money)*100))
-      end
-      if(buycar.selleruser_id == seller.id)#判断支付金额是否对
-        buycar.amount = sprintf("%.2f",money);
-        buycar.status=1
-        buycar.remark=params[:name]
-        buycar.minusbpnum = bpnum
-        buycar.save
-        user.save
-        systemls = seller.systemlogs.new
-        systemls.table = "buycar"
-        systemls.userid = buycar.id
-        systemls.userip = request.remote_ip
-        systemls.textout = "您于" + Time.new.strftime("%Y-%m-%d %H:%M:%S") + "支付了一个订单的款项，共计支付了¥" + buycar.amount.to_s + "。"
-        systemls.save
-        modelout(seller.seller_id,4,seller.openid,buycar.id)
-        render json: params[:callback]+'({"buycar":"'++buycar.id.to_s++'"})',content_type: "application/javascript"
-      else
-        render json: '({"err":404})',content_type: "application/javascript"
-      end
-    else
-      render json: '({"err":404})',content_type: "application/javascript"
-    end
-  end
-
   def getbuycarconfirm
     buycar=Buycar.where("id = ? and selleruser_id = ?",params[:id],@selleruser[0].id)
-    if (buycar.length > 0) && (buycar[0].status == 2)
+    if (buycar.length > 0) && (buycar[0].status == 3)
       buycar=buycar[0]
       seller = @selleruser[0]
       seller.repeatshop=1
@@ -658,7 +785,7 @@ class ApisController < ApplicationController
         user = User.find(seller.user_id)
         user.bpnum = user.bpnum.to_i + buycar.bpnum.to_i
         user.save
-        buycar.status=3
+        buycar.status=4
         buycar.save
         thirupmoney(3,seller.up_id,buycar.id)
         systemls = seller.systemlogs.new
@@ -667,7 +794,7 @@ class ApisController < ApplicationController
         systemls.userip = request.remote_ip
         systemls.textout = "您于" + Time.new.strftime("%Y-%m-%d %H:%M:%S") + "确认收货，订单号为" + buycar.ordernumber + "。"
         systemls.save
-        render json: params[:callback]+'({"buycar":"'++buycar.id.to_s++'"})',content_type: "application/javascript"
+        render json: params[:callback]+'({"buycar":"'+buycar.id.to_s+'"})',content_type: "application/javascript"
       end
     else
       render json: '({"err":404})',content_type: "application/javascript"
@@ -676,7 +803,7 @@ class ApisController < ApplicationController
 
   def getbuycaraftersales
     buycar=Buycar.where("id = ? and selleruser_id = ?",params[:id],@selleruser[0].id)
-    if (buycar.length > 0) && (buycar[0].status == 2)
+    if (buycar.length > 0) && (buycar[0].status == 3)
       buycar=buycar[0]
       buycar.status=12
       buycar.save
@@ -707,10 +834,11 @@ class ApisController < ApplicationController
         user.first = user.first.to_f + buycar.first.to_f
         user.first = sprintf("%.2f",user.first)
       end
+      modelout(selluser.seller_id,6,selluser.openid,buycar.id)
       num = num - 1
       user.save
       if num > 1
-        thirupid(num,selluser.up_id,buyid)
+        thirupmoney(num,selluser.up_id,buyid)
       end
     end
   end
@@ -721,7 +849,7 @@ class ApisController < ApplicationController
     selleruser = Selleruser.where('seller_id = ? and openid = ?' ,seller.id ,openid)
     if selleruser.length > 0
       if selleruser[0].openidposan.to_s == ''
-        redirect_to 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + $posanappid.to_s + '&redirect_uri=http%3a%2f%2fcoffeeadmin.posan.biz%2fapis%2fthreeopenid&response_type=code&scope=snsapi_base&state=' + selleruser[0].id + '#wechat_redirect'
+        redirect_to 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + $posanappid.to_s + '&redirect_uri=http%3a%2f%2fcoffeeadmin.posan.biz%2fapis%2fthreeopenid&response_type=code&scope=snsapi_base&state=' + selleruser[0].id.to_s + '#wechat_redirect'
       else
         redirect_to "http://threefront.posan.biz?openid=" + openid.to_s + "&sid=" + seller.id.to_s
       end
@@ -780,7 +908,7 @@ class ApisController < ApplicationController
     systemls.userid = user.id
     systemls.userip = request.remote_ip
     systemls.textout = "您于" + Time.new.strftime("%Y-%m-%d %H:%M:%S") + '把用户名“'
-    systemls.textout = systemls.textout + user.name + '”修改为“' + params[:name] + '”'
+    systemls.textout = systemls.textout + user.name.to_s + '”修改为“' + params[:name] + '”'
     user.name=params[:name]
     user.save
     systemls.save
@@ -818,7 +946,11 @@ class ApisController < ApplicationController
       openid = getopenid(seller.appid,seller.secret,params[:code])
       sellerfind = Selleruser.where("openid = ? and seller_id = ?",openid,selleruser[0].seller_id)
       if sellerfind.length > 0
-        redirect_to "http://threefront.posan.biz?openid=" + openid.to_s + "&sid=" + selleruser[0].seller_id.to_s
+        if sellerfind[0].openidposan.to_s == ''
+          redirect_to 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + $posanappid.to_s + '&redirect_uri=http%3a%2f%2fcoffeeadmin.posan.biz%2fapis%2fthreeopenid&response_type=code&scope=snsapi_base&state=' + sellerfind[0].id.to_s + '#wechat_redirect'
+        else
+          redirect_to "http://threefront.posan.biz?openid=" + openid.to_s + "&sid=" + selleruser[0].seller_id.to_s
+        end
       else
         sellernew=Selleruser.new
         sellernew.repeatshop = 0
@@ -833,6 +965,11 @@ class ApisController < ApplicationController
         img = JSON.parse(img)
 
         user=User.new
+        if img['nickname'] == nil
+          user.name = "无名"
+        else
+          user.name=img['nickname']
+        end
         user.name=img['nickname']
         user.third=0
         user.senond=0
@@ -954,6 +1091,7 @@ class ApisController < ApplicationController
 
   def getwxgetrich
     selleruser = @selleruser[0]
+    nameddr = params[:name]
     userpwd = Userpwd.where('user_id = ?', selleruser.user_id)
     if userpwd.length > 0
       userpwd = userpwd[0]
@@ -965,16 +1103,26 @@ class ApisController < ApplicationController
         money = params[:money].to_f
         if (user.first.to_f >=  money) && (user.first.to_f > 0) && (money > 0)
           user.first = user.first - money
-          user.first = sprintf("%.2f",user.first)
-          user.save
-          systemls = selleruser.systemlogs.new
-          systemls.table = "user"
-          systemls.userid = user.id
-          systemls.userip = request.remote_ip
-          systemls.textout = "您于" + Time.new.strftime("%Y-%m-%d %H:%M:%S") + "提现了¥" + money.to_s + "元"
-          systemls.save
+          user.first = sprintf("%.2f",user.first).to_f
+          ordernum = "01" + Time.now.strftime('%Y%m%d%H%M%S') + user.id.to_s
+          body = {"ordernumber" => ordernum, "name" => nameddr, "openid" => selleruser.openidposan, "withdraw" => money}
+          body = posthtml($postthwxpay,body)
+          body = JSON.parse(body[9..(body.length-2)].to_s)["result"]["raw"]["xml"]
+          if (body["result_code"]=="SUCCESS") && (body["return_msg"] == "")
+            user.save
+            systemls = selleruser.systemlogs.new
+            systemls.table = "user"
+            systemls.userid = user.id
+            systemls.userip = request.remote_ip
+            systemls.textout = "您于" + Time.new.strftime("%Y-%m-%d %H:%M:%S") + "提现了¥" + money.to_s + "元" + "，订单号为" + ordernum.to_s
+            systemls.save
+            render json: params[:callback] + '({"err":"正确","money":"' + user.first.to_s + '"})',content_type: "application/javascript"
+          else
+            render json: params[:callback] + '({"err":"错误","err_code_des":"' + body["err_code_des"].to_s + '"})',content_type: "application/javascript"
+          end
+
           ############提现###################
-          render json: params[:callback] + '({"err":"正确","money":"' + user.first.to_s + '"})',content_type: "application/javascript"
+
         else
           render json: params[:callback]+'({"err":"错误"})',content_type: "application/javascript"
         end
@@ -1061,4 +1209,5 @@ class ApisController < ApplicationController
     buycar.save
     render json: params[:callback]+'({"err":"正确"})',content_type: "application/javascript"
   end
+
 end

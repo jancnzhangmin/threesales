@@ -1,5 +1,5 @@
 class LogisticsController < ApplicationController
-
+  before_action :authenticate_role
   before_action :set_logistic, only: [:show, :edit, :update, :destroy]
 
   def index

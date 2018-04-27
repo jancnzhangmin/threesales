@@ -33,12 +33,16 @@
               <td>
                 <%= link_to '查看',seller_path(seller) %>
                 <%= link_to '编辑',edit_seller_path(seller) %>
-                <%= link_to '删除', seller, method: :delete, data: { confirm: '确认删除?' } %></td>
+                <%if session[:admin] == "admin"%>
+                    <%= link_to '删除', seller, method: :delete, data: { confirm: '确认删除?' } %></td>
+                <%end%>
             </tr>
         <% end %>
         </tbody>
       </table>
-      <%= link_to "新增",new_seller_path,class: "btn btn-w-m btn-primary pull-right" %>
+      <%if session[:admin] == "admin"%>
+        <%= link_to "新增",new_seller_path,class: "btn btn-w-m btn-primary pull-right" %>
+      <%end%>
       <br>
     </div>
   </div>

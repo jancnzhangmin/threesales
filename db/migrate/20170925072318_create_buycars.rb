@@ -4,7 +4,7 @@ class CreateBuycars < ActiveRecord::Migration[5.0]
       t.integer :selleruser_id
       t.float :amount
       t.integer :status
-      t.integer :ordernumber
+      t.string :ordernumber
 
       t.timestamps
     end

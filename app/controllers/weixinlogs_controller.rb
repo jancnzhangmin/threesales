@@ -1,7 +1,27 @@
 class WeixinlogsController < ApplicationController
+  before_action :authenticate_role
   before_action :set_weixinlog, only: [:edit, :update, :destroy]
   def index
-    @weixinlog=Weixinlog.all
+    num = Weixinlog.all.length
+    if num != 0
+      @pagenum = num / 20
+      if ( num % 20 ) > 0
+        @pagenum = @pagenum + 1
+      end
+    else
+      @pagenum = 1
+    end
+    if (params[:page] == nil) || (params[:page].to_i <= 0)
+      num = 0
+    elsif params[:page].to_i >= @pagenum
+      num = @pagenum - 1
+      params[:page] = @pagenum
+    else
+      num = params[:page].to_i - 1
+    end
+
+    @weixinlog=Weixinlog.all.order('id desc').limit((num * 20).to_s + ",20")
+
   end
   def edit
 

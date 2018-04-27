@@ -1,4 +1,5 @@
 class RetcausesController < ApplicationController
+  before_action :authenticate_role
   before_action :set_retcause, only: [:show, :edit, :update, :destroy]
   def index
     @retcauses = Retcause.all.order('num')

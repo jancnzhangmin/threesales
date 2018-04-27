@@ -1,5 +1,5 @@
 class LogisticordersController < ApplicationController
-
+  before_action :authenticate_role
   before_action :set_logisticorder, only: [:show, :edit, :update, :destroy]
 
 

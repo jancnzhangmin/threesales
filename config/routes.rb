@@ -1,25 +1,26 @@
 Rails.application.routes.draw do
 
-  get 'modelconts/index'
+  root :to => 'login#login'
 
-  get 'sellermodels/index'
-
-  get 'stables/index'
-
-  get 'retcauses/index'
-
+  post "login/findlogin"
+  get "login/login"
+  get "login/unlogin"
   resources :systemlogs
   resources :retcauses
   resources :comments
   resources :articles
+  resources :admins
   get 'logisticbuycar/update'
   get 'logisticbuycar/destroy'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
-  root :to => 'sellers#index'
   resources :sellers do
+
     resources :productclas
+
     resources :products
+
     resources :admins
+
     resources :sellerusers
     resources :buycars do
       #resources :logisticbuycar
@@ -125,6 +126,8 @@ Rails.application.routes.draw do
       get 'getretcauses'
       get 'getwxposanopenid'
       get 'getbuycardel'
+      post 'prepaytrue'
+      get 'getbuycartruemoney'
     end
   end
 

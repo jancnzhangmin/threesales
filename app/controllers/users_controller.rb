@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-
+  before_action :authenticate_role
   before_action :set_user, only: [:show, :edit, :update, :destroy]
 
 

@@ -1,5 +1,5 @@
 class ReceivesController < ApplicationController
-
+  before_action :authenticate_role
 
   private
   def receive_params

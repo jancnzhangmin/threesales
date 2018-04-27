@@ -1,4 +1,5 @@
 class RetofordersController < ApplicationController
+  before_action :authenticate_role
   before_action :set_retoforder, only: [:show, :edit, :update, :destroy, :setretok, :setretno, :setlogisticok]
   before_action :set_seller, only: [:setretok, :setretno, :update, :setlogisticok]
   before_action :set_buycar, only: [:setretok, :setretno, :update, :setlogisticok]

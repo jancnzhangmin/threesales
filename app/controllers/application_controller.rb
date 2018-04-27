@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   require 'net/http'
+
   def gethtml(http)
     uri = http
     ret=''
@@ -9,7 +10,7 @@ class ApplicationController < ActionController::Base
     end
     return ret
   end
-  def posthtml(http,body)
+  def posthtmls(http,body)
     uri = URI.parse(http)
     https = Net::HTTP.new(uri.host, uri.port)
     https.use_ssl = true
@@ -17,6 +18,17 @@ class ApplicationController < ActionController::Base
     request.body = body
     response = https.request(request)
     return response.body
+  end
+  def posthtml(http,body)
+#    uri = URI.parse(http)
+#    http = Net::HTTP.new(uri.host, uri.port)
+#    request = Net::HTTP::Post.new(uri.request_uri)
+#    request.body = body
+#    response = http.request(request)
+#    return response.body
+    uri = URI(http)
+    res = Net::HTTP.post_form(uri, body)
+    return res.body
   end
   def getaccesstoken(id)
     seller=Seller.find(id)
@@ -130,7 +142,7 @@ class ApplicationController < ActionController::Base
     case stype
       when 1 #关注通知
         postcustomtext(token,openid,"恭喜您，已成功关注“" + sell.name.to_s + '”')
-      when 2..10 #关注后上级通知
+      when 2..10 #关注后上级通知2关注成功3订单创建成功4支付成功5预到账分润提示6分润到账通知
         models = sell.sellermodels.where('stype = ?',stype)
         models.each do |model|
           str = '{"touser":"' + openid + '","template_id":"' + model.modeid + '", "data":{ '
@@ -146,10 +158,59 @@ class ApplicationController < ActionController::Base
             end
           end
           str = str[0..(str.length - 2)] + '}}'
-          posthtml('https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=' + token,str)
+          posthtmls('https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=' + token,str)
         end
       else
         puts "adult"
     end
   end
+
+  private
+
+  def authenticate
+    unless  session[:current_user_id]
+      redirect_to root_path
+    end
+  end
+
+  def authenticate_role
+    if session[:current_user_id] == nil
+      redirect_to root_path
+      return
+    end
+    pathdate = request.path.split('/')
+    contddr = ""
+    if pathdate[pathdate.length-1] == "edit"
+      contddr =  pathdate[pathdate.length - 3]
+    else
+      contddr = (pathdate[pathdate.length-1].to_i) > 0 ? pathdate[pathdate.length-2]:pathdate[pathdate.length-1]
+    end
+    user = Admin.find(session[:current_user_id])
+    if contddr == 'skin-config.html'
+
+    elsif contddr == 'admins'
+      if (session[:admin] != 'admin') && (params[:seller_id].to_i != user.seller_id)
+        user.nids = user.nids.to_i + 1
+        redirect_to root_path
+      end
+    elsif contddr == 'sellers'
+      if (params[:id].to_i != 0) && (user.seller_id.to_i != 0) && (params[:id].to_i != user.seller_id)
+        user.nids = user.nids.to_i + 1
+        redirect_to root_path
+      end
+    elsif (pathdate[1] == 'sellers')
+      if (params[:seller_id].to_i != user.seller_id) && (params[:id].to_i != 0) && (user.seller_id.to_i != 0)
+        user.nids = user.nids.to_i + 1
+        redirect_to root_path
+      end
+    else
+      if session[:admin] != 'admin'
+        user.nids = user.nids.to_i + 1
+        redirect_to root_path
+      end
+    end
+    user.updated_at = Time.now
+    user.save
+  end
+
 end

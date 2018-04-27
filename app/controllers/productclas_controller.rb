@@ -1,4 +1,5 @@
 class ProductclasController < ApplicationController
+  before_action :authenticate_role
   before_action :set_productcla, only: [:show, :edit, :update, :destroy]
   before_action :set_seller,only: [:index, :new, :create, :show, :edit, :update, :destroy]
   def index

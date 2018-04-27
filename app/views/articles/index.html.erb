@@ -35,9 +35,10 @@
         <% end %>
         </tbody>
       </table>
+      <%= link_to "返回",seller_path(@seller),class: "btn btn-w-m btn-info " %>
       <div class="btn-group pull-right">
         <%= link_to '新增', new_seller_article_path,class:"btn btn-w-m btn-default " %>
-        <%= link_to "返回",seller_path(@seller),class: "btn btn-w-m btn-info " %>
+
       </div>
 
       <br>

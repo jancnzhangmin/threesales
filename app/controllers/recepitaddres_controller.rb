@@ -1,5 +1,5 @@
 class RecepitaddresController < ApplicationController
-
+  before_action :authenticate_role
   before_action :set_recepitaddre, only: [:show, :edit, :update, :destroy]
 
   def index

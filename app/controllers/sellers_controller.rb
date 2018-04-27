@@ -1,8 +1,12 @@
 class SellersController < ApplicationController
-
+  before_action :authenticate_role
   before_action :set_seller, only: [:show, :edit, :update, :destroy, :productcla]
   def index
-    @sellers = Seller.all
+    if session[:admin] == "admin"
+      @sellers = Seller.all
+    else
+      @sellers = Seller.where("id = ?",session[:current_user_id])
+    end
   end
 
   def edit
@@ -28,7 +32,6 @@ class SellersController < ApplicationController
   end
 
   def update
-    debugger
     respond_to do |format|
       if @seller.update(seller_params)
         format.html { redirect_to sellers_path, notice: 'Unit was successfully updated.' }
@@ -41,16 +44,19 @@ class SellersController < ApplicationController
   end
 
   def destroy
-    @seller.destroy
-    respond_to do |format|
-      format.html { redirect_to sellers_path, notice: '删除成功' }
-      format.json { head :no_content }
+    if session[:admin] == "admin"
+      @seller.destroy
+      respond_to do |format|
+        format.html { redirect_to sellers_path, notice: '删除成功' }
+        format.json { head :no_content }
+      end
+    else
+      redirect_to sellers_path, notice: '删除失败'
     end
   end
 
 def show
   @productclacount = @seller.productclas.count
-
 end
 
   private

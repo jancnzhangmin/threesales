@@ -1,4 +1,5 @@
 class ModelcontsController < ApplicationController
+  before_action :authenticate_role
   before_action :set_seller, only: [:index, :new, :create, :show, :edit, :update, :destroy]
   before_action :set_sellermodel, only: [:index, :new, :create, :show, :edit, :update, :destroy]
   before_action :set_modelcont, only: [:show, :edit, :update, :destroy]

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180408085138) do
+ActiveRecord::Schema.define(version: 20180424085459) do
 
   create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "seller_id"
@@ -21,6 +21,9 @@ ActiveRecord::Schema.define(version: 20180408085138) do
     t.string   "auth"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
+    t.integer  "errpwd"
+    t.integer  "nids"
+    t.integer  "loginnum"
   end
 
   create_table "articles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -38,7 +41,7 @@ ActiveRecord::Schema.define(version: 20180408085138) do
     t.integer  "selleruser_id"
     t.float    "amount",        limit: 24
     t.integer  "status"
-    t.integer  "ordernumber"
+    t.string   "ordernumber"
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
     t.integer  "seller_id"
@@ -53,6 +56,7 @@ ActiveRecord::Schema.define(version: 20180408085138) do
     t.integer  "bpnum"
     t.integer  "minusbpnum"
     t.integer  "deltype"
+    t.float    "dedmoney",      limit: 24
   end
 
   create_table "comments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

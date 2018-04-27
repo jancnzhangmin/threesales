@@ -29,7 +29,9 @@
         <% end %>
         </tbody>
       </table>
-      <%= link_to "返回",notices_path(@notice),class: "btn btn-w-m btn-info " %>
+      <% if @seller%>
+          <%= link_to "返回",seller_path(@seller),class: "btn btn-w-m btn-info " %>
+      <%end%>
       <div class="btn-group  btn-w-m pull-right" role="group">
         <% if @seller%>
             <%= link_to "新增",new_seller_notice_path,class: "btn btn-w-m btn-primary " %>

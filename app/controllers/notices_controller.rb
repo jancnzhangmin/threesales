@@ -1,5 +1,5 @@
 class NoticesController < ApplicationController
-
+  before_action :authenticate_role
   before_action :set_notice, only: [:show, :edit, :update, :destroy]
   before_action :set_seller, only: [:index, :show, :new, :edit, :update, :destroy]
 

@@ -1,10 +1,36 @@
 class BuycarsController < ApplicationController
+  before_action :authenticate_role
+  skip_before_action :authenticate_role, only: [:editstatus]
+
   before_action :set_buycar, only: [:edit, :update, :destroy]
   before_action :set_seller, only: [:edit, :update, :destroy]
 
   def index
     @seller = Seller.find(params[:seller_id])
-    @buycars = @seller.buycars.where("deltype is null or deltype = 4").order('created_at desc')
+
+    num = @seller.buycars.length
+    if num != 0
+      @pagenum = num / 20
+      if ( num % 20 ) > 0
+        @pagenum = @pagenum + 1
+      end
+    else
+      @pagenum = 1
+    end
+    if (params[:page] == nil) || (params[:page].to_i <= 0)
+      num = 0
+    elsif params[:page].to_i >= @pagenum
+      num = @pagenum - 1
+      params[:page] = @pagenum
+    else
+      num = params[:page].to_i - 1
+    end
+    if session[:admin] != 'admin'
+      @buycars = @seller.buycars.where("deltype is null or deltype = 4").order('created_at desc').limit((num * 20).to_s + ",20")
+    else
+      @buycars = @seller.buycars.order('created_at desc').limit((num * 20).to_s + ",20")
+    end
+
   end
 
   def edit
@@ -27,7 +53,7 @@ class BuycarsController < ApplicationController
     @buycar = Buycar.find(params[:id])
     logisti = Logisticorder.where("buycar_id = ?",@buycar.id)
     if logisti.length > 0
-      @buycar.status=2
+      @buycar.status=3
       @buycar.save
       render json: params[:callback]+'({"buycar":200})',content_type: "application/javascript"
     end
@@ -47,18 +73,23 @@ class BuycarsController < ApplicationController
   end
 
   def destroy
-    #order=@buycar.orders
-    #order.each { |ord| ord.destroy }
-    if @buycar.status != nil
-      thirdownid(3,@buycar.selleruser_id,@buycar.id)
-    end
-    #@buycar.destroy
-    if @buycar.deltype == 4
-      @buycar.deltype = 6
+    if session[:admin] != 'admin'
+
+      if @buycar.status != nil
+        thirdownid(3,@buycar.selleruser_id,@buycar.id)
+      end
+      #@buycar.destroy
+      if @buycar.deltype == 4
+        @buycar.deltype = 6
+      else
+        @buycar.deltype = 2
+      end
+      @buycar.save
     else
-      @buycar.deltype = 2
+      order=@buycar.orders
+      order.each { |ord| ord.destroy }
+      @buycar.destroy
     end
-    @buycar.save
     respond_to do |format|
       format.html { redirect_to seller_buycars_path, notice: '删除成功' }
       format.json { head :no_content }

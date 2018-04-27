@@ -1,4 +1,5 @@
 class SystemlogsController < ApplicationController
+  before_action :authenticate_role
   before_action :set_systemlog, only: [:show, :edit, :update, :destroy]
 
   # GET /systemlogs

@@ -1,4 +1,5 @@
 class WeixinmenusController < ApplicationController
+  before_action :authenticate_role
   before_action :set_seller, only: [:index]
   def index
     name=Weixinmenu.where("sitrue = 0 and seller_id = ?",@seller.id)

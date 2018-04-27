@@ -1,4 +1,5 @@
 class CommentsController < ApplicationController
+  before_action :authenticate_role
   before_action :set_comment, only: [:show, :edit, :update, :destroy, :publecomm, :publedel]
   before_action :set_seller, only: [:show, :edit, :update, :destroy, :publecomm, :publedel]
   before_action :set_article, only: [:show, :edit, :update, :destroy, :publecomm, :publedel]

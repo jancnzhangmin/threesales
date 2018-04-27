@@ -1,4 +1,5 @@
 class StablesController < ApplicationController
+  before_action :authenticate_role
   before_action :set_stable, only: [:show, :edit, :update, :destroy]
   def index
     @stables = Stable.all

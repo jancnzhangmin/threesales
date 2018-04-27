@@ -1,0 +1,42 @@
+<div class="middle-box text-center loginscreen  animated fadeInDown">
+  <div>
+    <div>
+
+      <h1 class="logo-name" style="font-size: 100px;">波山</h1>
+
+    </div>
+    <h3>欢迎使用三级分销系统</h3>
+    <%= form_for @user , url: {action: "findlogin"}, html: {class: "m-t"} do |f| %>
+      <div class="form-group">
+        <%= f.text_field :username, autofocus: true, autocomplete: "email" ,placeholder:"用户名",class:"form-control"%>
+      </div>
+      <div class="form-group">
+        <%= f.password_field :pwd, autocomplete: "off" ,class:"form-control",placeholder:"密码"%>
+      </div>
+      <%= f.submit "登 录" ,class:"btn btn-primary block full-width m-b"%>
+    <% end %>
+  </div>
+</div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="myModalLabel" style="color: #ff0000;padding: 0px;">
+          警告
+        </h3>
+      </div>
+      <div class="modal-body"><%= notice %></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary btn-lg" data-dismiss="modal" style="margin: 0em 0 0 0;background-color: #1c84c6;border-color: #1c84c6;color: #FFF;border-radius: 10px;">
+          关闭
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    if ($('.modal-body').text() != "")
+    {
+        $('#myModal').modal('show');
+    }
+</script>
